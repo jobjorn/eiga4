@@ -1,0 +1,1 @@
+A starter template for creating NextJS + Typescript apps.
