@@ -11,6 +11,7 @@ interface Props {
 interface Fruit {
   id: number;
   fruit: string;
+  position: number;
 }
 
 const IndexPage: NextPage<Props> = (props) => {
@@ -34,7 +35,7 @@ const IndexPage: NextPage<Props> = (props) => {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const result = await query('SELECT id, fruit_name AS fruit FROM fruit_list');
+  const result = await query('SELECT id, fruit_name AS fruit, position FROM fruit_list');
   const { rows }: { rows: Fruit[] } = result;
   console.log(result);
   return { props: { test: rows } };
