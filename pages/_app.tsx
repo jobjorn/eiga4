@@ -1,8 +1,15 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { ThemeProvider, CssBaseline } from '@material-ui/core';
+import { ThemeProvider, Theme, StyledEngineProvider, CssBaseline } from '@mui/material';
 import { theme } from 'styles/theme';
+
+
+declare module '@mui/styles/defaultTheme' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
+
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -15,21 +22,21 @@ function MyApp({ Component, pageProps }) {
     }
   }, []);
 
-  return (
-    <>
-      <Head>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
-        />
-      </Head>
+  return <>
+    <Head>
+      <meta
+        name="viewport"
+        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no"
+      />
+    </Head>
 
+    <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Component {...pageProps} key={router.asPath} />
       </ThemeProvider>
-    </>
-  );
+    </StyledEngineProvider>
+  </>;
 }
 
 export default MyApp;

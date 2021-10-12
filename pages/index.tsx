@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Paper, Typography } from '@material-ui/core';
+import { Box, Container, Paper, Typography } from '@mui/material';
 import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { query } from 'lib/db';
