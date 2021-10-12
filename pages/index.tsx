@@ -2,7 +2,8 @@ import React from 'react';
 import { Box, Container, Paper, Typography } from '@material-ui/core';
 import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
-import {query} from 'lib/db';
+import { query } from 'lib/db';
+import { Menu } from 'components/Menu';
 
 interface Props {
   test: Fruit[];
@@ -19,12 +20,13 @@ const IndexPage: NextPage<Props> = (props) => {
   return (
     <Container maxWidth="md">
       <Head>
-        <title>NextJS Typescript Starter</title>
+        <title>NextJS Typescript Starter Hej Per!</title>
       </Head>
+      <Menu />
       <Box mt={6}>
         <Paper>
           <Box p={2}>
-            <Typography variant={'h1'}>Eiga 4</Typography>
+            <Typography variant={'h1'}>Eiga 4 Her Per</Typography>
             <Typography variant={'subtitle1'}>Testing</Typography>
             <pre>{JSON.stringify(test, null, 2)}</pre>
           </Box>
@@ -35,7 +37,9 @@ const IndexPage: NextPage<Props> = (props) => {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async () => {
-  const result = await query('SELECT id, fruit_name AS fruit, position FROM fruit_list');
+  const result = await query(
+    'SELECT id, fruit_name AS fruit, position FROM fruit_list'
+  );
   const { rows }: { rows: Fruit[] } = result;
   console.log(result);
   return { props: { test: rows } };
