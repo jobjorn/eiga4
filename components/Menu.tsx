@@ -5,9 +5,11 @@ interface MenuItemProps {
   active: boolean;
 }
 
-const MenuItem = styled('li')<MenuItemProps>`
-  color: ${(props) => (props.active ? 'green' : 'red')};
-`;
+const MenuItem = styled('li')<MenuItemProps>((props) => ({
+  color: props.active ? 'green' : 'red'
+}));
+
+// temat kommer du åt via props.theme.whatever
 
 export const Menu: React.FC<{}> = () => {
   const router = useRouter();
