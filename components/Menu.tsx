@@ -1,12 +1,38 @@
 import { useRouter } from 'next/router';
-import { styled } from '@mui/system';
+import { flexbox, styled } from '@mui/system';
+import React from 'react';
+import Link from 'next/link';
 
 interface MenuItemProps {
   active: boolean;
 }
 
+interface MenuItemLinkProps {
+  target: string;
+}
+
 const MenuItem = styled('li')<MenuItemProps>((props) => ({
-  color: props.active ? 'green' : 'red'
+  display: 'inline-block',
+  padding: '15px',
+  backgroundColor: props.active ? 'black' : 'inherit'
+}));
+
+const MenuItemLink: React.FC<MenuItemLinkProps> = (props) => {
+  const router = useRouter();
+  return (
+    <MenuItem active={router.pathname === props.target}>
+      <Link href={props.target}>
+        <a>{props.children}</a>
+      </Link>
+    </MenuItem>
+  );
+};
+
+const MenuBar = styled('ul')(({}) => ({
+  color: 'white',
+  backgroundColor: 'maroon',
+  display: 'flexbox',
+  flexDirection: 'column'
 }));
 
 // temat kommer du åt via props.theme.whatever
@@ -14,14 +40,12 @@ const MenuItem = styled('li')<MenuItemProps>((props) => ({
 export const Menu: React.FC<{}> = () => {
   const router = useRouter();
   return (
-    <div id="bar">
-      <p>Bar2 Just nu besöker du: {router.pathname}</p>
-      <ul>
-        <MenuItem active={router.pathname === '/list'}>List</MenuItem>
-        <MenuItem active={router.pathname === '/log'}>Log</MenuItem>
-        <MenuItem active={router.pathname === '/import'}>Import</MenuItem>
-        <MenuItem active={router.pathname === '/settings'}>Settings</MenuItem>
-      </ul>
-    </div>
+    <MenuBar>
+      <MenuItemLink target="/">Home</MenuItemLink>
+      <MenuItemLink target="/list">List</MenuItemLink>
+      <MenuItemLink target="/log">Log</MenuItemLink>
+      <MenuItemLink target="/import">Import</MenuItemLink>
+      <MenuItemLink target="/settings">Settings</MenuItemLink>
+    </MenuBar>
   );
 };

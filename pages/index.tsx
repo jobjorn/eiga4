@@ -4,6 +4,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import Head from 'next/head';
 import { query } from 'lib/db';
 import { Menu } from 'components/Menu';
+import Navbar from 'components/Navbar';
 
 interface Props {
   test: Fruit[];
@@ -20,13 +21,13 @@ const IndexPage: NextPage<Props> = (props) => {
   return (
     <Container maxWidth="md">
       <Head>
-        <title>NextJS Typescript Starter Hej Per!</title>
+        <title>Eiga4</title>
       </Head>
       <Menu />
       <Box mt={6}>
         <Paper>
           <Box p={2}>
-            <Typography variant={'h1'}>Eiga 4 Her Per</Typography>
+            <Typography variant={'h1'}>Eiga 4</Typography>
             <Typography variant={'subtitle1'}>Testing</Typography>
             <pre>{JSON.stringify(test, null, 2)}</pre>
           </Box>
@@ -41,7 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
     'SELECT id, fruit_name AS fruit, position FROM fruit_list'
   );
   const { rows }: { rows: Fruit[] } = result;
-  console.log(result);
+  //console.log(result);
   return { props: { test: rows } };
 };
 
