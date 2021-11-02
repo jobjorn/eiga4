@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { styled } from '@mui/system';
 import React from 'react';
 import Link from 'next/link';
+import { Paper } from '@mui/material';
 
 interface MenuItemLiProps {
   active: boolean;
@@ -9,16 +10,16 @@ interface MenuItemLiProps {
 
 const MenuItemLi = styled('li')<MenuItemLiProps>((props) => ({
   display: 'inline-block',
-  padding: '15px',
-  backgroundColor: props.active ? 'black' : 'inherit'
+  padding: props.theme.spacing(2),
+  backgroundColor: props.active ? props.theme.palette.primary.light : 'inherit'
 }));
 
 interface MenuItemProps {
   target: string;
 }
 
-const StyledA = styled('a')(({}) => ({
-  color: 'white',
+const StyledA = styled('a')((props) => ({
+  color: props.theme.palette.primary.contrastText,
   textDecoration: 'none'
 }));
 
@@ -40,17 +41,17 @@ const MenuBar = styled('ul')((props) => ({
   flexDirection: 'column'
 }));
 
-// temat kommer du åt via props.theme.whatever
-
 export const Menu: React.FC<{}> = () => {
   const router = useRouter();
   return (
-    <MenuBar>
-      <MenuItem target="/">Home</MenuItem>
-      <MenuItem target="/list">List</MenuItem>
-      <MenuItem target="/log">Log</MenuItem>
-      <MenuItem target="/import">Import</MenuItem>
-      <MenuItem target="/settings">Settings</MenuItem>
-    </MenuBar>
+    <Paper>
+      <MenuBar>
+        <MenuItem target="/">Home</MenuItem>
+        <MenuItem target="/list">List</MenuItem>
+        <MenuItem target="/log">Log</MenuItem>
+        <MenuItem target="/import">Import</MenuItem>
+        <MenuItem target="/settings">Settings</MenuItem>
+      </MenuBar>
+    </Paper>
   );
 };
