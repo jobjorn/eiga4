@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
-import { styled } from '@mui/system';
 import React from 'react';
 import Link from 'next/link';
-import { Paper } from '@mui/material';
+import { Paper, styled } from '@mui/material';
 
 interface MenuItemLiProps {
   active: boolean;
