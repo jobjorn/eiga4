@@ -2,6 +2,9 @@ import React from 'react';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@mui/styles';
 
+//TODO: implementera flytt från @mui/styles
+// se pers commit https://github.com/perenstrom/oscar-night/commit/b1d31f00dc1538879340cd2f825f03940106bec2
+
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
     const materialUiSheets = new ServerStyleSheets();

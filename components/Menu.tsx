@@ -1,36 +1,41 @@
 import { useRouter } from 'next/router';
-import { flexbox, styled } from '@mui/system';
+import { styled } from '@mui/system';
 import React from 'react';
 import Link from 'next/link';
 
-interface MenuItemProps {
+interface MenuItemLiProps {
   active: boolean;
 }
 
-interface MenuItemLinkProps {
-  target: string;
-}
-
-const MenuItem = styled('li')<MenuItemProps>((props) => ({
+const MenuItemLi = styled('li')<MenuItemLiProps>((props) => ({
   display: 'inline-block',
   padding: '15px',
   backgroundColor: props.active ? 'black' : 'inherit'
 }));
 
-const MenuItemLink: React.FC<MenuItemLinkProps> = (props) => {
+interface MenuItemProps {
+  target: string;
+}
+
+const StyledA = styled('a')(({}) => ({
+  color: 'white',
+  textDecoration: 'none'
+}));
+
+const MenuItem: React.FC<MenuItemProps> = (props) => {
   const router = useRouter();
   return (
-    <MenuItem active={router.pathname === props.target}>
-      <Link href={props.target}>
-        <a>{props.children}</a>
+    <MenuItemLi active={router.pathname === props.target}>
+      <Link href={props.target} passHref>
+        <StyledA>{props.children}</StyledA>
       </Link>
-    </MenuItem>
+    </MenuItemLi>
   );
 };
 
-const MenuBar = styled('ul')(({}) => ({
-  color: 'white',
-  backgroundColor: 'maroon',
+const MenuBar = styled('ul')((props) => ({
+  color: props.theme.palette.primary.contrastText,
+  backgroundColor: props.theme.palette.primary.dark,
   display: 'flexbox',
   flexDirection: 'column'
 }));
@@ -41,11 +46,11 @@ export const Menu: React.FC<{}> = () => {
   const router = useRouter();
   return (
     <MenuBar>
-      <MenuItemLink target="/">Home</MenuItemLink>
-      <MenuItemLink target="/list">List</MenuItemLink>
-      <MenuItemLink target="/log">Log</MenuItemLink>
-      <MenuItemLink target="/import">Import</MenuItemLink>
-      <MenuItemLink target="/settings">Settings</MenuItemLink>
+      <MenuItem target="/">Home</MenuItem>
+      <MenuItem target="/list">List</MenuItem>
+      <MenuItem target="/log">Log</MenuItem>
+      <MenuItem target="/import">Import</MenuItem>
+      <MenuItem target="/settings">Settings</MenuItem>
     </MenuBar>
   );
 };
