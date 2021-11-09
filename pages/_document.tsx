@@ -4,6 +4,7 @@ import { ServerStyleSheets } from '@mui/styles';
 
 //TODO: implementera flytt från @mui/styles
 // se pers commit https://github.com/perenstrom/oscar-night/commit/b1d31f00dc1538879340cd2f825f03940106bec2
+// kolla på commiten efter också
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx) {
