@@ -14,18 +14,54 @@ interface Fruit {
 }
 
 export const VotingBox: React.FC<Fruits> = (props) => {
+  const fruit0 = props.fruits[0];
+  const fruit1 = props.fruits[1];
   const router = useRouter();
+
+  const fruitVote = (fruitId: number) => {
+    console.log(fruitId);
+    const defaultHeaders = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json;charset=UTF-8'
+    };
+    const url = '/api/vote';
+    const options = {
+      method: 'POST',
+      headers: defaultHeaders,
+      body: JSON.stringify({
+        fruitId
+      })
+    };
+    fetch(url, options)
+      .then((response) => {
+        if (response.status === 200) {
+          // refresh
+        } else {
+          console.error(response.status);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   return (
     <Box>
       <h2>Herp</h2>
       <Grid container>
         <Grid item xs={6}>
-          {props.fruits[0].fruit}
-          <FruitEmoji fruit={props.fruits[0].fruit} />
+          <button
+            onClick={() => {
+              fruitVote(fruit0.id);
+            }}
+          >
+            {fruit0.fruit}
+            <FruitEmoji fruit={fruit0.fruit} />
+          </button>
         </Grid>
         <Grid item xs={6}>
-          {props.fruits[1].fruit}
-          <FruitEmoji fruit={props.fruits[1].fruit} />
+          {fruit1.fruit}
+          <FruitEmoji fruit={fruit1.fruit} />
         </Grid>
       </Grid>
     </Box>
