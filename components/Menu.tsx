@@ -4,13 +4,17 @@ import Link from 'next/link';
 import { Paper, styled } from '@mui/material';
 
 interface MenuItemLiProps {
-  active: boolean;
+  isActive: boolean;
 }
 
-const MenuItemLi = styled('li')<MenuItemLiProps>((props) => ({
+const MenuItemLi = styled('li', {
+  shouldForwardProp: (prop) => prop !== 'isActive'
+})<MenuItemLiProps>((props) => ({
   display: 'inline-block',
   padding: props.theme.spacing(2),
-  backgroundColor: props.active ? props.theme.palette.primary.light : 'inherit'
+  backgroundColor: props.isActive
+    ? props.theme.palette.primary.light
+    : 'inherit'
 }));
 
 interface MenuItemProps {
@@ -25,7 +29,7 @@ const StyledA = styled('a')((props) => ({
 const MenuItem: React.FC<MenuItemProps> = (props) => {
   const router = useRouter();
   return (
-    <MenuItemLi active={router.pathname === props.target}>
+    <MenuItemLi isActive={router.pathname === props.target}>
       <Link href={props.target} passHref>
         <StyledA>{props.children}</StyledA>
       </Link>
