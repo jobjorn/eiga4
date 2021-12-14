@@ -1,19 +1,32 @@
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Paper, styled } from '@mui/material';
 import { FruitEmoji } from './FruitEmoji';
+import { getTwoFruits } from 'services/local';
 
 interface Fruits {
   fruits: Fruit[];
 }
 
-interface Fruit {
+export interface Fruit {
   id: number;
   fruit: string;
   position: number;
 }
 
 export const VotingBox: React.FC<Fruits> = (props) => {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDataAsync = async () => {
+      const twoFruits = await getTwoFruits();
+      console.log('visa mig frukterna!!');
+      console.log(twoFruits);
+      setLoading(false);
+    };
+    fetchDataAsync();
+  }, []);
+
   const fruit0 = props.fruits[0];
   const fruit1 = props.fruits[1];
   const router = useRouter();
