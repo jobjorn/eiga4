@@ -18,6 +18,7 @@ interface Fruit {
 
 const IndexPage: NextPage<Props> = (props) => {
   const { fruits } = props;
+
   return (
     <Container maxWidth="md">
       <Head>
@@ -29,7 +30,7 @@ const IndexPage: NextPage<Props> = (props) => {
           <Box p={2}>
             <Typography variant={'h1'}>Eiga 4</Typography>
             <Typography variant={'subtitle1'}>Testing</Typography>
-            <VotingBox fruits={fruits} />
+            <VotingBox />
           </Box>
         </Paper>
       </Box>

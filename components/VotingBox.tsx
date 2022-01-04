@@ -4,31 +4,28 @@ import { Box, Grid, Paper, styled } from '@mui/material';
 import { FruitEmoji } from './FruitEmoji';
 import { getTwoFruits } from 'services/local';
 
-interface Fruits {
-  fruits: Fruit[];
-}
-
 export interface Fruit {
   id: number;
   fruit: string;
   position: number;
 }
 
-export const VotingBox: React.FC<Fruits> = (props) => {
+export const VotingBox: React.FC<{}> = () => {
   const [loading, setLoading] = useState(true);
+  const [fruits, setFruits] = useState<[Fruit, Fruit]>();
 
+  const fetchTwoFruits = async () => {
+    const twoFruits = await getTwoFruits();
+    console.log('visa mig frukterna!!');
+    console.log(twoFruits);
+
+    setFruits(twoFruits);
+    setLoading(false);
+  };
   useEffect(() => {
-    const fetchDataAsync = async () => {
-      const twoFruits = await getTwoFruits();
-      console.log('visa mig frukterna!!');
-      console.log(twoFruits);
-      setLoading(false);
-    };
-    fetchDataAsync();
+    fetchTwoFruits();
   }, []);
 
-  const fruit0 = props.fruits[0];
-  const fruit1 = props.fruits[1];
   const router = useRouter();
 
   const fruitVote = (fruitId: number) => {
@@ -48,7 +45,7 @@ export const VotingBox: React.FC<Fruits> = (props) => {
     fetch(url, options)
       .then((response) => {
         if (response.status === 200) {
-          // refresh
+          fetchTwoFruits();
         } else {
           console.error(response.status);
         }
@@ -62,20 +59,34 @@ export const VotingBox: React.FC<Fruits> = (props) => {
     <Box>
       <h2>Herp</h2>
       <Grid container>
-        <Grid item xs={6}>
-          <button
-            onClick={() => {
-              fruitVote(fruit0.id);
-            }}
-          >
-            {fruit0.fruit}
-            <FruitEmoji fruit={fruit0.fruit} />
-          </button>
-        </Grid>
-        <Grid item xs={6}>
-          {fruit1.fruit}
-          <FruitEmoji fruit={fruit1.fruit} />
-        </Grid>
+        {loading ? (
+          <Grid item xs={12}>
+            laddar
+          </Grid>
+        ) : (
+          <>
+            <Grid item xs={6}>
+              <button
+                onClick={() => {
+                  fruitVote(fruits[0].id);
+                }}
+              >
+                {fruits[0].fruit}
+                <FruitEmoji fruit={fruits[0].fruit} />
+              </button>
+            </Grid>
+            <Grid item xs={6}>
+              <button
+                onClick={() => {
+                  fruitVote(fruits[1].id);
+                }}
+              >
+                {fruits[1].fruit}
+                <FruitEmoji fruit={fruits[1].fruit} />
+              </button>
+            </Grid>
+          </>
+        )}
       </Grid>
     </Box>
   );
