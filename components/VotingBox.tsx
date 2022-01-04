@@ -1,6 +1,15 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Paper, styled } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  Grid,
+  Paper,
+  styled,
+  useTheme
+} from '@mui/material';
 import { FruitEmoji } from './FruitEmoji';
 import { getTwoFruits } from 'services/local';
 
@@ -16,8 +25,6 @@ export const VotingBox: React.FC<{}> = () => {
 
   const fetchTwoFruits = async () => {
     const twoFruits = await getTwoFruits();
-    console.log('visa mig frukterna!!');
-    console.log(twoFruits);
 
     setFruits(twoFruits);
     setLoading(false);
@@ -55,10 +62,13 @@ export const VotingBox: React.FC<{}> = () => {
       });
   };
 
+  const theme = useTheme();
+
   return (
     <Box>
-      <h2>Herp</h2>
-      <Grid container>
+      <h2>May the best fruit win</h2>
+      <h3>Next up: implementera faktisk quicksort-logik</h3>
+      <Grid container gap={theme.spacing(1)} wrap="nowrap">
         {loading ? (
           <Grid item xs={12}>
             laddar
@@ -66,24 +76,32 @@ export const VotingBox: React.FC<{}> = () => {
         ) : (
           <>
             <Grid item xs={6}>
-              <button
-                onClick={() => {
-                  fruitVote(fruits[0].id);
-                }}
-              >
-                {fruits[0].fruit}
-                <FruitEmoji fruit={fruits[0].fruit} />
-              </button>
+              <Card>
+                <CardActionArea
+                  onClick={() => {
+                    fruitVote(fruits[0].id);
+                  }}
+                >
+                  <CardContent>
+                    {fruits[0].fruit}
+                    <FruitEmoji fruit={fruits[0].fruit} />
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Grid>
             <Grid item xs={6}>
-              <button
-                onClick={() => {
-                  fruitVote(fruits[1].id);
-                }}
-              >
-                {fruits[1].fruit}
-                <FruitEmoji fruit={fruits[1].fruit} />
-              </button>
+              <Card>
+                <CardActionArea
+                  onClick={() => {
+                    fruitVote(fruits[1].id);
+                  }}
+                >
+                  <CardContent>
+                    {fruits[1].fruit}
+                    <FruitEmoji fruit={fruits[1].fruit} />
+                  </CardContent>
+                </CardActionArea>
+              </Card>
             </Grid>
           </>
         )}
