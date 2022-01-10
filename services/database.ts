@@ -2,11 +2,59 @@ import { Fruit } from 'components/VotingBox';
 import { query } from 'lib/db';
 
 export const getTwoFruitsFromDatabase = async () => {
+  console.log('get two fruits from database');
   const result = await query(
     'SELECT id, fruit_name AS fruit, position FROM fruit_list ORDER BY RANDOM() LIMIT 2'
   );
+  getPivot();
   const { rows }: { rows: Fruit[] } = result;
   return { fruits: rows };
+};
+
+export const getPivot = async () => {
+  const pivotQuery = await query('SELECT * FROM fruit_list WHERE pivot = TRUE');
+  const pivot = pivotQuery.rows[0];
+  console.log('pivot:');
+  console.log(pivot);
+
+  if (pivot === undefined) {
+    const positionGroupQuery = await query(
+      'SELECT position, COUNT(position) as count FROM fruit_list GROUP BY position ORDER BY count DESC, position ASC LIMIT 1'
+    ); // denna hämtar den största gruppen, den översta om det finns flera lika
+    const positionGroup = positionGroupQuery.rows[0];
+    console.log('positionGroup:');
+    console.log(positionGroup);
+
+    const newPivotQuery = await query(
+      'UPDATE fruit_list SET pivot = true WHERE id IN (SELECT id FROM fruit_list WHERE position = $1 ORDER BY RANDOM() LIMIT 1) RETURNING *',
+      [positionGroup.position]
+    );
+    const newPivot = newPivotQuery.rows[0];
+    console.log('newPivot:');
+    console.log(newPivot);
+
+    const updatePositionsAboveQuery = await query(
+      'UPDATE fruit_list SET position = position - 1 WHERE position < $1',
+      [newPivot.position]
+    );
+    const updatePositionsAbove = updatePositionsAboveQuery.rows;
+    console.log('updatePositionsAbove:');
+    console.log(updatePositionsAbove);
+
+    const updatePositionsBelowQuery = await query(
+      'UPDATE fruit_list SET position = position + 1 WHERE position > $1',
+      [newPivot.position]
+    );
+    const updatePositionsBelow = updatePositionsBelowQuery.rows;
+    console.log('updatePositionsBelow:');
+    console.log(updatePositionsBelow);
+  } else {
+    // här ska vi dubbelkolla om det finns >1 frukter kvar vid pivoten
+  }
+
+  // const result = await query('');
+  // const { rows } = result;
+  // return rows;
 };
 
 /* services to do 

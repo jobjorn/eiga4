@@ -6,6 +6,7 @@ const twoFruits = async (req: NextApiRequest, res: NextApiResponse) => {
     return new Promise((resolve) => {
       getTwoFruitsFromDatabase()
         .then((fruits) => {
+          console.log('twoFruits API');
           res.status(200).json(fruits);
           resolve('');
         })
