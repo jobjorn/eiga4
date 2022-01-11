@@ -11,26 +11,29 @@ import {
   useTheme
 } from '@mui/material';
 import { FruitEmoji } from './FruitEmoji';
-import { getTwoFruits } from 'services/local';
-
-export interface Fruit {
-  id: number;
-  fruit: string;
-  position: number;
-}
+import { getPivot, getTwoFruits } from 'services/local';
+import { Fruit } from 'types/types';
 
 export const VotingBox: React.FC<{}> = () => {
   const [loading, setLoading] = useState(true);
   const [fruits, setFruits] = useState<[Fruit, Fruit]>();
+  const [pivot, setPivot] = useState();
 
   const fetchTwoFruits = async () => {
     const twoFruits = await getTwoFruits();
-
+    console.log('här kör vi setFruits');
     setFruits(twoFruits);
     setLoading(false);
   };
+  const fetchPivot = async () => {
+    const pivot = await getPivot();
+    console.log('här ska det komma en pivot');
+    console.log(pivot);
+    setPivot(pivot);
+  };
   useEffect(() => {
     fetchTwoFruits();
+    fetchPivot();
   }, []);
 
   const router = useRouter();
@@ -68,7 +71,7 @@ export const VotingBox: React.FC<{}> = () => {
     <Box>
       <h2>May the best fruit win</h2>
       <h3>Next up: implementera faktisk quicksort-logik</h3>
-      <Grid container gap={theme.spacing(1)} wrap="nowrap">
+      <Grid container spacing={1}>
         {loading ? (
           <Grid item xs={12}>
             laddar

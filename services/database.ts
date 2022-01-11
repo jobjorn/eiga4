@@ -1,55 +1,79 @@
-import { Fruit } from 'components/VotingBox';
 import { query } from 'lib/db';
+import { Fruit } from 'types/types';
 
 export const getTwoFruitsFromDatabase = async () => {
   console.log('get two fruits from database');
+  const pivot: Fruit = await getPivot();
+  console.log('hämta pivot i getTwoFruitsFromDatabase:');
+  console.log(pivot);
   const result = await query(
-    'SELECT id, fruit_name AS fruit, position FROM fruit_list ORDER BY RANDOM() LIMIT 2'
+    'SELECT * FROM fruit_list WHERE position = $1 AND id != $2 ORDER BY RANDOM() LIMIT 1',
+    [pivot.position, pivot.id]
   );
-  getPivot();
-  const { rows }: { rows: Fruit[] } = result;
-  return { fruits: rows };
+  //  const { rows }: { rows: Fruit[] } = result;
+  return { fruits: [pivot, result.rows[0]] };
+};
+
+const setPivot = async () => {
+  const positionGroupQuery = await query(
+    'SELECT position, COUNT(position) as count FROM fruit_list GROUP BY position ORDER BY count DESC, position ASC LIMIT 1'
+  ); // denna hämtar den största gruppen, den översta om det finns flera lika
+  const positionGroup = positionGroupQuery.rows[0];
+
+  const newPivotQuery = await query(
+    'UPDATE fruit_list SET pivot = true WHERE id IN (SELECT id FROM fruit_list WHERE position = $1 ORDER BY RANDOM() LIMIT 1) RETURNING *',
+    [positionGroup.position]
+  );
+  const newPivot = newPivotQuery.rows[0];
+
+  const updatePositionsAboveQuery = await query(
+    'UPDATE fruit_list SET position = position - 1 WHERE position < $1',
+    [newPivot.position]
+  );
+  updatePositionsAboveQuery;
+
+  const updatePositionsBelowQuery = await query(
+    'UPDATE fruit_list SET position = position + 1 WHERE position > $1',
+    [newPivot.position]
+  );
+  updatePositionsBelowQuery;
+
+  console.log('här returnar vi newPivot');
+  return newPivot;
 };
 
 export const getPivot = async () => {
   const pivotQuery = await query('SELECT * FROM fruit_list WHERE pivot = TRUE');
   const pivot = pivotQuery.rows[0];
-  console.log('pivot:');
-  console.log(pivot);
 
   if (pivot === undefined) {
-    const positionGroupQuery = await query(
-      'SELECT position, COUNT(position) as count FROM fruit_list GROUP BY position ORDER BY count DESC, position ASC LIMIT 1'
-    ); // denna hämtar den största gruppen, den översta om det finns flera lika
-    const positionGroup = positionGroupQuery.rows[0];
-    console.log('positionGroup:');
-    console.log(positionGroup);
+    console.log('pivot was undefined');
+    const newPivot = setPivot();
 
-    const newPivotQuery = await query(
-      'UPDATE fruit_list SET pivot = true WHERE id IN (SELECT id FROM fruit_list WHERE position = $1 ORDER BY RANDOM() LIMIT 1) RETURNING *',
-      [positionGroup.position]
-    );
-    const newPivot = newPivotQuery.rows[0];
-    console.log('newPivot:');
-    console.log(newPivot);
-
-    const updatePositionsAboveQuery = await query(
-      'UPDATE fruit_list SET position = position - 1 WHERE position < $1',
-      [newPivot.position]
-    );
-    const updatePositionsAbove = updatePositionsAboveQuery.rows;
-    console.log('updatePositionsAbove:');
-    console.log(updatePositionsAbove);
-
-    const updatePositionsBelowQuery = await query(
-      'UPDATE fruit_list SET position = position + 1 WHERE position > $1',
-      [newPivot.position]
-    );
-    const updatePositionsBelow = updatePositionsBelowQuery.rows;
-    console.log('updatePositionsBelow:');
-    console.log(updatePositionsBelow);
+    console.log('returnerar newPivot pga pivot undefined');
+    return newPivot;
   } else {
-    // här ska vi dubbelkolla om det finns >1 frukter kvar vid pivoten
+    const countPivotGroupQuery = await query(
+      'SELECT COUNT(*) FROM fruit_list WHERE position = $1',
+      [pivot.position]
+    );
+    const countPivotGroup = countPivotGroupQuery.rows[0].count;
+    console.log(countPivotGroup);
+    if (countPivotGroup <= 1) {
+      console.log('det fanns för få i pivot-gruppen');
+      const removePivotsQuery = await query(
+        'UPDATE fruit_list SET pivot = FALSE WHERE pivot = TRUE'
+      );
+      removePivotsQuery;
+
+      const newPivot = setPivot();
+
+      console.log('returnerar newPivot pga för många pivotar');
+      return newPivot;
+    } else {
+      console.log('inga problem, returnera pivot');
+      return pivot;
+    }
   }
 
   // const result = await query('');
