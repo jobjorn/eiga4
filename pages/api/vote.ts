@@ -1,19 +1,29 @@
 import { query } from 'lib/db';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-interface PostRequestBody {
-  fruitId: number;
-}
-interface FruitVote {
-  fruitId: number;
+interface Vote {
+  winner: number;
+  loser: number;
+  pivot: number;
 }
 
-const createVote = async (vote: FruitVote) => {
+const createVote = async (vote: Vote) => {
   try {
-    const result = await query(
-      'UPDATE fruit_list SET position = position + 1 WHERE id = $1',
-      [vote.fruitId]
+    const voteLog = await query(
+      'INSERT INTO vote_log(winner, loser) VALUES ($1, $2)',
+      [vote.winner, vote.loser]
     );
+    voteLog;
+    if (vote.winner === vote.pivot) {
+      const editPosition = await query(
+        'UPDATE fruit_list SET position = position + 1 WHERE id = $1',
+        [vote.loser]
+      );
+      // kör det där också
+    } else {
+      // som ovan fast tvärtom
+    }
+    const result = 'lol'; // fixa detta
     return result;
   } catch (error) {
     console.log(error);
@@ -23,10 +33,12 @@ const createVote = async (vote: FruitVote) => {
 const vote = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
     return new Promise((resolve) => {
-      const { fruitId }: PostRequestBody = req.body;
+      const { winner, loser, pivot }: Vote = req.body;
 
       createVote({
-        fruitId: fruitId
+        winner,
+        loser,
+        pivot
       })
         .then((vote) => {
           res.status(200).json(vote);

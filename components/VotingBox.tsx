@@ -38,8 +38,9 @@ export const VotingBox: React.FC<{}> = () => {
 
   const router = useRouter();
 
-  const fruitVote = (fruitId: number) => {
-    console.log(fruitId);
+  const createVote = (winner: number, loser: number) => {
+    console.log('winner: ' + { winner });
+    console.log('loser: ' + { loser });
     const defaultHeaders = {
       Accept: 'application/json',
       'Content-Type': 'application/json;charset=UTF-8'
@@ -49,7 +50,9 @@ export const VotingBox: React.FC<{}> = () => {
       method: 'POST',
       headers: defaultHeaders,
       body: JSON.stringify({
-        fruitId
+        winner,
+        loser,
+        pivot: fruits[0].id
       })
     };
     fetch(url, options)
@@ -82,7 +85,7 @@ export const VotingBox: React.FC<{}> = () => {
               <Card>
                 <CardActionArea
                   onClick={() => {
-                    fruitVote(fruits[0].id);
+                    createVote(fruits[0].id, fruits[1].id);
                   }}
                 >
                   <CardContent>
@@ -96,7 +99,7 @@ export const VotingBox: React.FC<{}> = () => {
               <Card>
                 <CardActionArea
                   onClick={() => {
-                    fruitVote(fruits[1].id);
+                    createVote(fruits[1].id, fruits[0].id);
                   }}
                 >
                   <CardContent>
