@@ -19,11 +19,14 @@ const createVote = async (vote: Vote) => {
         'UPDATE fruit_list SET position = position + 1 WHERE id = $1',
         [vote.loser]
       );
-      // kör det där också
     } else {
-      // som ovan fast tvärtom
+      const editPosition = await query(
+        'UPDATE fruit_list SET position = position - 1 WHERE id = $1',
+        [vote.winner]
+      );
     }
-    const result = 'lol'; // fixa detta
+
+    const result = 'okokkhkhkjgjh';
     return result;
   } catch (error) {
     console.log(error);

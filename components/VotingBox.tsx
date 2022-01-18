@@ -17,23 +17,26 @@ import { Fruit } from 'types/types';
 export const VotingBox: React.FC<{}> = () => {
   const [loading, setLoading] = useState(true);
   const [fruits, setFruits] = useState<[Fruit, Fruit]>();
-  const [pivot, setPivot] = useState();
+  // const [pivot, setPivot] = useState();
 
   const fetchTwoFruits = async () => {
     const twoFruits = await getTwoFruits();
     console.log('här kör vi setFruits');
     setFruits(twoFruits);
+    console.log(fruits);
     setLoading(false);
   };
+  /*
   const fetchPivot = async () => {
     const pivot = await getPivot();
     console.log('här ska det komma en pivot');
     console.log(pivot);
     setPivot(pivot);
   };
+  */
   useEffect(() => {
     fetchTwoFruits();
-    fetchPivot();
+    //fetchPivot();
   }, []);
 
   const router = useRouter();
@@ -69,7 +72,7 @@ export const VotingBox: React.FC<{}> = () => {
   };
 
   const theme = useTheme();
-
+  console.log(fruits);
   return (
     <Box>
       <h2>May the best fruit win</h2>
@@ -79,7 +82,7 @@ export const VotingBox: React.FC<{}> = () => {
           <Grid item xs={12}>
             laddar
           </Grid>
-        ) : (
+        ) : fruits[1] ? (
           <>
             <Grid item xs={6}>
               <Card>
@@ -110,6 +113,10 @@ export const VotingBox: React.FC<{}> = () => {
               </Card>
             </Grid>
           </>
+        ) : (
+          <Grid item xs={12}>
+            färdigröstat
+          </Grid>
         )}
       </Grid>
     </Box>
