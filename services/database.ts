@@ -81,6 +81,15 @@ export const getPivot = async () => {
   // return rows;
 };
 
+export const getListFromDatabase = async () => {
+  const result = await query(
+    'SELECT * FROM fruit_list ORDER BY position ASC',
+    []
+  );
+  //  const { rows }: { rows: Fruit[] } = result;
+  return result.rows;
+};
+
 /* services to do 
 
 1. HÄMTA PIVOT

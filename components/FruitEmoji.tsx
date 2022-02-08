@@ -42,9 +42,5 @@ export const FruitEmoji: React.FC<Fruit> = (fruit) => {
     emoji = '🍍';
   }
 
-  return (
-    <Box>
-      <Emoji symbol={emoji} />
-    </Box>
-  );
+  return <Emoji symbol={emoji} />;
 };
