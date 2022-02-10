@@ -8,6 +8,7 @@ import {
   CssBaseline
 } from '@mui/material';
 import { theme } from 'styles/theme';
+import { UserProvider } from '@auth0/nextjs-auth0';
 
 /*
 
@@ -29,7 +30,7 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <>
+    <UserProvider>
       <Head>
         <meta
           name="viewport"
@@ -43,7 +44,7 @@ function MyApp({ Component, pageProps }) {
           <Component {...pageProps} key={router.asPath} />
         </ThemeProvider>
       </StyledEngineProvider>
-    </>
+    </UserProvider>
   );
 }
 

@@ -11,6 +11,7 @@
     "test-watch": "jest --watch"
   },
   "dependencies": {
+    "@auth0/nextjs-auth0": "^1.7.0",
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@mui/material": "^5.0.3",
