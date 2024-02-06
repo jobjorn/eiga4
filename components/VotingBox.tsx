@@ -10,7 +10,6 @@ import {
   styled,
   useTheme
 } from '@mui/material';
-import { FruitEmoji } from './FruitEmoji';
 import { getPivot, getTwoFruits } from 'services/local';
 import { Fruit } from 'types/types';
 
@@ -42,6 +41,9 @@ export const VotingBox: React.FC<{}> = () => {
   const router = useRouter();
 
   const createVote = (winner: number, loser: number) => {
+    if (!fruits) {
+      return;
+    }
     console.log('winner: ' + { winner });
     console.log('loser: ' + { loser });
     const defaultHeaders = {
@@ -71,8 +73,11 @@ export const VotingBox: React.FC<{}> = () => {
       });
   };
 
-  const theme = useTheme();
   console.log(fruits);
+  if (!fruits) {
+    return;
+  }
+
   return (
     <Box>
       <h2>May the best fruit win</h2>
@@ -91,10 +96,7 @@ export const VotingBox: React.FC<{}> = () => {
                     createVote(fruits[0].id, fruits[1].id);
                   }}
                 >
-                  <CardContent>
-                    {fruits[0].fruit}
-                    <FruitEmoji fruit={fruits[0].fruit} />
-                  </CardContent>
+                  <CardContent>{fruits[0].fruit}</CardContent>
                 </CardActionArea>
               </Card>
             </Grid>
@@ -105,10 +107,7 @@ export const VotingBox: React.FC<{}> = () => {
                     createVote(fruits[1].id, fruits[0].id);
                   }}
                 >
-                  <CardContent>
-                    {fruits[1].fruit}
-                    <FruitEmoji fruit={fruits[1].fruit} />
-                  </CardContent>
+                  <CardContent>{fruits[1].fruit}</CardContent>
                 </CardActionArea>
               </Card>
             </Grid>

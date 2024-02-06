@@ -10,13 +10,12 @@ import {
   styled,
   useTheme
 } from '@mui/material';
-import { FruitEmoji } from './FruitEmoji';
 import { getList } from 'services/local';
 import { Fruit } from 'types/types';
 
 export const List: React.FC<{}> = () => {
   const [loading, setLoading] = useState(true);
-  const [list, setList] = useState<Fruit[]>();
+  const [list, setList] = useState<Fruit[]>([]);
 
   const fetchList = async () => {
     const list: Fruit[] = await getList();
@@ -30,9 +29,6 @@ export const List: React.FC<{}> = () => {
     fetchList();
   }, []);
 
-  const router = useRouter();
-
-  const theme = useTheme();
   console.log(list);
   return (
     <Box>
@@ -45,9 +41,7 @@ export const List: React.FC<{}> = () => {
           <Grid item xs={12}>
             <ol>
               {list.map((item: Fruit, index) => (
-                <li key={index}>
-                  {item.fruit} <FruitEmoji fruit={item.fruit} />
-                </li>
+                <li key={index}>{item.fruit}</li>
               ))}
             </ol>
           </Grid>

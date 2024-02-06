@@ -11,7 +11,7 @@ export async function addNames(userSub: string, formData: FormData) {
   let namesArray: string[] = [];
 
   namesString = formData.get('names') as string;
-  namesArray = namesString.split('\n').map((name) => name.trim());
+  namesArray = namesString.split(/[\n,]/).map((name) => name.trim());
 
   console.log(namesArray);
 

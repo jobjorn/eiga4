@@ -33,17 +33,19 @@ export const Overview: React.FC<{}> = async () => {
 
   return (
     <>
-      <Typography variant="h1">Översikt</Typography>
+      <Typography variant="h4">Översikt</Typography>
 
-      <Typography variant="h2">Namn</Typography>
+      <Typography variant="h5">Namn</Typography>
       {list.map((item) => {
         return (
-          <div key={item.id}>
-            <Typography variant="body1">{item.name.name}</Typography>
-          </div>
+          <ul key={item.id}>
+            <li>
+              <Typography variant="body1">{item.name.name}</Typography>
+            </li>
+          </ul>
         );
       })}
-      <Typography variant="h2">Lägg till nya namn</Typography>
+      <Typography variant="h5">Lägg till nya namn</Typography>
       <form action={addNamesWithId}>
         <Stack spacing={2}>
           <TextField label="Namn" name="names" multiline minRows={3} />
