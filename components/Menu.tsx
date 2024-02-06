@@ -1,4 +1,4 @@
-// import { useRouter } from 'next/router';
+'use client';
 import React, { useState } from 'react';
 import {
   AppBar,
@@ -41,7 +41,7 @@ export const Menu: React.FC<{}> = () => {
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link href="/" style={{ textDecoration: 'none' }} passHref>
-            Eiga 4
+            Namnväljaren 3.0
           </Link>
         </Typography>
         {foldMenu ? (
@@ -80,16 +80,6 @@ const ToolbarList: React.FC<{}> = () => {
             </Button>
           </Link>
 
-          <Link href="/game/new" passHref>
-            <Button key={'Nytt spel'} sx={{ color: 'white' }}>
-              Nytt spel
-            </Button>
-          </Link>
-          <Link href="/tell-me-more" passHref>
-            <Button key={'Regler'} sx={{ color: 'white' }}>
-              Regler
-            </Button>
-          </Link>
           <Link href="/settings" passHref>
             <Button key={'Inställningar'} sx={{ color: 'white' }}>
               <Settings />
@@ -135,24 +125,6 @@ const DrawerList: React.FC<{}> = () => {
                 <ViewList />
               </ListItemIcon>
               <ListItemText primary={'Översikt'} />
-            </ListItemButton>
-          </Link>
-
-          <Link href="/game/new" passHref>
-            <ListItemButton key={'Nytt spel'}>
-              <ListItemIcon>
-                <AddBox />
-              </ListItemIcon>
-              <ListItemText primary={'Nytt spel'} />
-            </ListItemButton>
-          </Link>
-
-          <Link href="/tell-me-more" passHref>
-            <ListItemButton key={'Regler'}>
-              <ListItemIcon>
-                <Gavel />
-              </ListItemIcon>
-              <ListItemText primary={'Regler'} />
             </ListItemButton>
           </Link>
 

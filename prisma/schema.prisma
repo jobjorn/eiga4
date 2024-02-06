@@ -1,0 +1,59 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id         Int           @id @default(autoincrement())
+    sub        String        @unique
+    name       String
+    email      String        @unique
+    picture    String?
+    role       Role          @default(USER)
+    lists      List[]
+    partnering Partnership[] @relation("partnering")
+    partnered  Partnership[] @relation("partnered")
+
+    @@map("users")
+}
+
+model Partnership {
+    id            Int    @id @default(autoincrement())
+    partnering    User   @relation("partnering", fields: [partneringSub], references: [sub])
+    partneringSub String @map("partnering_sub") // relation scalar field
+    partnered     User   @relation("partnered", fields: [partneredSub], references: [sub])
+    partneredSub  String @map("partnered_sub") // relation scalar field
+
+    @@map("partnerships")
+}
+
+enum Role {
+    USER
+    MODERATOR
+    ADMIN
+}
+
+model Name {
+    id          Int     @id @default(autoincrement())
+    name        String  @unique
+    description String?
+    lists       List[]
+
+    @@map("names")
+}
+
+model List {
+    id       Int     @id @default(autoincrement())
+    user     User    @relation(fields: [userSub], references: [sub])
+    userSub  String  @map("user_sub") // relation scalar field
+    name     Name    @relation(fields: [nameId], references: [id])
+    nameId   Int     @map("name_id") // relation scalar field
+    position Int
+    pivot    Boolean @default(false)
+
+    @@map("lists")
+}
