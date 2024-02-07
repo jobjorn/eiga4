@@ -1,12 +1,51 @@
-import React, { useState, useRef } from 'react';
-import { Button, Stack, TextField, Typography } from '@mui/material';
-import { addNames } from 'app/actions';
+import React from 'react';
+import { Typography } from '@mui/material';
 import { getSession } from '@auth0/nextjs-auth0';
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { unstable_cache } from 'next/cache';
+import { OverviewForm } from './OverviewForm';
 
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 });
+
+export type ListWithNames = Prisma.ListGetPayload<{
+  include: {
+    name: true;
+  };
+}>;
+
+const getList = unstable_cache(
+  async (): Promise<ListWithNames[]> => {
+    const session = await getSession();
+    const user = session?.user ?? null;
+    if (!user) {
+      return [];
+    }
+
+    const result = await prisma.list.findMany({
+      where: {
+        userSub: user.sub
+      },
+      include: {
+        name: true
+      },
+      orderBy: {
+        name: {
+          name: 'asc'
+        }
+      }
+    });
+
+    if (result.length === 0) {
+      return [];
+    } else {
+      return result;
+    }
+  },
+  ['list'],
+  { tags: ['list'] }
+);
 
 export const Overview: React.FC<{}> = async () => {
   const session = await getSession();
@@ -15,21 +54,7 @@ export const Overview: React.FC<{}> = async () => {
     return null;
   }
 
-  const addNamesWithId = addNames.bind(null, user.sub);
-
-  const list = await prisma.list.findMany({
-    where: {
-      userSub: user.sub
-    },
-    include: {
-      name: true
-    },
-    orderBy: {
-      name: {
-        name: 'asc'
-      }
-    }
-  });
+  const list = await getList();
 
   return (
     <>
@@ -45,15 +70,7 @@ export const Overview: React.FC<{}> = async () => {
           </ul>
         );
       })}
-      <Typography variant="h5">Lägg till nya namn</Typography>
-      <form action={addNamesWithId}>
-        <Stack spacing={2}>
-          <TextField label="Namn" name="names" multiline minRows={3} />
-        </Stack>
-        <Button variant="contained" type="submit">
-          Lägg till
-        </Button>
-      </form>
+      <OverviewForm />
     </>
   );
 };

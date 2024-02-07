@@ -55,5 +55,6 @@ model List {
     position Int
     pivot    Boolean @default(false)
 
+    @@unique([userSub, nameId])
     @@map("lists")
 }
