@@ -52,8 +52,8 @@ model List {
     userSub  String  @map("user_sub") // relation scalar field
     name     Name    @relation(fields: [nameId], references: [id])
     nameId   Int     @map("name_id") // relation scalar field
+    subarray String?
     position Int
-    pivot    Boolean @default(false)
 
     @@unique([userSub, nameId])
     @@map("lists")
