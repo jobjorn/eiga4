@@ -10,17 +10,17 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { addNames } from 'app/actions';
+import { startRanking } from 'app/actions';
 import { useFormStatus, useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Submit } from './Submit';
 
-export const OverviewForm: React.FC<{}> = () => {
+export const OverviewListForm: React.FC<{}> = () => {
   const { user, isLoading } = useUser();
 
-  const addNamesWithId = addNames.bind(null, user?.sub);
+  const startRankingWithId = startRanking.bind(null, user?.sub);
 
-  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
+  const [statusMessage, formAction] = useFormState(startRankingWithId, null);
   const formElement = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
@@ -34,7 +34,6 @@ export const OverviewForm: React.FC<{}> = () => {
   if (isLoading) {
     return (
       <>
-        <Typography variant="h5">Lägg till nya namn</Typography>
         <Skeleton variant="rectangular" height={60} />;
       </>
     );
@@ -43,7 +42,6 @@ export const OverviewForm: React.FC<{}> = () => {
   if (!user || !user.sub) {
     return (
       <>
-        <Typography variant="h5">Lägg till nya namn</Typography>
         <Box mt={2}>
           <Alert severity="error">Ej inloggad!</Alert>
         </Box>
@@ -53,7 +51,6 @@ export const OverviewForm: React.FC<{}> = () => {
 
   return (
     <>
-      <Typography variant="h5">Lägg till nya namn</Typography>
       {statusMessage && (
         <Box mt={2}>
           <Alert severity={statusMessage.severity}>
@@ -62,10 +59,7 @@ export const OverviewForm: React.FC<{}> = () => {
         </Box>
       )}
       <form action={formAction} ref={formElement}>
-        <Stack spacing={2}>
-          <TextField label="Namn" name="names" multiline minRows={3} />
-        </Stack>
-        <Submit>Lägg till</Submit>
+        <Submit>Starta rankning</Submit>
       </form>
     </>
   );
