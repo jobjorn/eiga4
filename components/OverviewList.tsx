@@ -1,10 +1,8 @@
 import React from 'react';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { getSession } from '@auth0/nextjs-auth0';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { unstable_cache } from 'next/cache';
-import { OverviewForm } from './OverviewForm';
-import { Submit } from './Submit';
 import { OverviewListForm } from './OverviewListForm';
 import { OverviewListTree } from './OverviewListTree';
 
@@ -56,17 +54,17 @@ export const OverviewList: React.FC<{}> = async () => {
   return (
     <>
       <Typography variant="h5">Namn</Typography>
-      {list.map((item) => {
-        return (
-          <ul key={item.id}>
-            <li>
+      <ul>
+        {list.map((item) => {
+          return (
+            <li key={item.id}>
               <Typography variant="body1">
                 {item.name.name} - {item.subarray}
               </Typography>
             </li>
-          </ul>
-        );
-      })}
+          );
+        })}
+      </ul>
       <OverviewListTree list={list} />
       <OverviewListForm />
     </>

@@ -19,7 +19,6 @@ export const Overview: React.FC<{}> = async () => {
 
       <OverviewList />
       <OverviewForm />
-      <div>hej</div>
     </>
   );
 };
