@@ -78,16 +78,6 @@ export const VotingMain: React.FC<{}> = async () => {
 
   return (
     <>
-      <Typography variant="h5">Namn</Typography>
-      <ul>
-        {list.map((item) => {
-          return (
-            <li key={item.id}>
-              <Typography variant="body1">{item.name.name}</Typography>
-            </li>
-          );
-        })}
-      </ul>
       <VotingDuel list={list} votes={votes} />
     </>
   );

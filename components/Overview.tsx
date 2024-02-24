@@ -14,7 +14,6 @@ export const Overview: React.FC<{}> = async () => {
 
   return (
     <>
-      <Typography variant="h4">Översikt</Typography>
       <VotingMain />
     </>
   );

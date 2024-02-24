@@ -7,9 +7,15 @@ import {
   Grid,
   Card,
   CardActionArea,
-  CardContent
+  CardContent,
+  Box,
+  Alert,
+  Skeleton
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useFormState } from 'react-dom';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { addVote } from 'app/actions';
 
 type Duel = {
   left: ListWithNames;
@@ -20,8 +26,11 @@ export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
   votes
 }) => {
+  console.log('votes', votes);
+
   const [duels, setDuels] = useState<Duel[]>([]);
   const [sortedList, setSortedList] = useState<ListWithNames[]>([]);
+  const [isFinallyMerged, setIsFinallyMerged] = useState(false);
 
   // Recursive function to perform merge sort on an array of ListWithNames
   const mergeSort = (list: ListWithNames[]): ListWithNames[] => {
@@ -60,10 +69,12 @@ export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     // Compare the elements of the left and right arrays and merge them in sorted order
     while (i < left.length && j < right.length) {
       const isLeftWinner = votes.find(
-        (vote) => vote.winnerId === left[i].id && vote.loserId === right[j].id
+        (vote) =>
+          vote.winnerId === left[i].nameId && vote.loserId === right[j].nameId
       );
       const isRightWinner = votes.find(
-        (vote) => vote.winnerId === right[j].id && vote.loserId === left[i].id
+        (vote) =>
+          vote.winnerId === right[j].nameId && vote.loserId === left[i].nameId
       );
       // Compare the number of votes for the current lists and push the list with more votes to the result array
       if (isLeftWinner) {
@@ -73,7 +84,7 @@ export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
         result.push(right[j]);
         j++;
       } else {
-        console.error(
+        console.log(
           'Här behövs en jämförelse',
           left[i].name.name,
           right[j].name.name
@@ -100,62 +111,109 @@ export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       j++;
     }
 
+    if (result.length == list.length) {
+      setIsFinallyMerged(true);
+    }
+
     // Return the merged and sorted array
     return result;
   };
 
   useEffect(() => {
+    setDuels([]);
+
     const newList = mergeSort(list);
+    console.log('nu kör vi useeffecten som sorterar listan');
 
     setSortedList(newList);
-  }, []);
+  }, [votes]);
 
   console.log('duels', duels);
+
+  const { user, isLoading } = useUser();
+
+  const addVoteWithId = addVote.bind(null, user?.sub);
+
+  const [statusMessage, formAction] = useFormState(addVoteWithId, null);
+  const formElement = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    console.log('statusMessage', statusMessage);
+    console.log('formElement', formElement);
+  }, [statusMessage]);
+
+  if (isLoading) {
+    return <Skeleton variant="rectangular" width={300} height={300} />;
+  }
 
   if (duels.length > 0) {
     return (
       <>
-        <Grid container spacing={1}>
-          <Grid item xs={6}>
-            <Card>
-              <CardActionArea onClick={() => {}}>
-                <CardContent
-                  sx={{
-                    aspectRatio: '1/1',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}
-                >
-                  {duels[0].left.name.name}
-                </CardContent>
-              </CardActionArea>
-            </Card>
+        {statusMessage && (
+          <Box mt={2}>
+            <Alert severity={statusMessage.severity}>
+              {statusMessage.message}
+            </Alert>
+          </Box>
+        )}
+        <form action={formAction} ref={formElement}>
+          <input type="hidden" name="left" value={duels[0].left.nameId} />
+          <input type="hidden" name="right" value={duels[0].right.nameId} />
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <Card>
+                <CardActionArea name="winner" value="left" type="submit">
+                  <CardContent
+                    sx={{
+                      aspectRatio: '1/1',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {duels[0].left.name.name}
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            <Grid item xs={6}>
+              <Card>
+                <CardActionArea name="winner" value="right" type="submit">
+                  <CardContent
+                    sx={{
+                      aspectRatio: '1/1',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {duels[0].right.name.name}
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <Card>
-              <CardActionArea onClick={() => {}}>
-                <CardContent
-                  sx={{
-                    aspectRatio: '1/1',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}
-                >
-                  {duels[0].right.name.name}
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        </Grid>
+        </form>
+      </>
+    );
+  }
+
+  if (isFinallyMerged) {
+    return (
+      <>
+        <Typography variant="h3">Sorterad lista!</Typography>
+        <Typography variant="body1">
+          {sortedList.map((list) => (
+            <div key={list.nameId}>{list.name.name}</div>
+          ))}
+        </Typography>
       </>
     );
   }
 
   return (
     <>
-      <Typography variant="body1">Inget att duellera</Typography>
+      <Typography variant="body1">(Oklart vad som pågår)</Typography>
     </>
   );
 };

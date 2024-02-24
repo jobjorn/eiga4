@@ -126,3 +126,61 @@ export async function addNames(
     message: 'Allt verkar ha gått bra.'
   };
 }
+
+export async function addVote(
+  userSub: string,
+  previousState: StatusMessage | null | undefined,
+  formData: FormData
+) {
+  console.log('addVote:', { previousState, userSub, formData });
+
+  if (formData === null) {
+    return {
+      severity: 'error',
+      message: 'FormData var null.'
+    };
+  }
+
+  const winner = formData.get('winner') as string;
+  console.log('winner:', winner);
+
+  const left = parseInt(formData.get('left') as string, 10);
+  const right = parseInt(formData.get('right') as string, 10);
+
+  let winnerId: number;
+  let loserId: number;
+  if (winner === 'left') {
+    winnerId = left;
+    loserId = right;
+  } else {
+    winnerId = right;
+    loserId = left;
+  }
+
+  await prisma.vote.create({
+    data: {
+      user: {
+        connect: {
+          sub: userSub
+        }
+      },
+      winner: {
+        connect: {
+          id: winnerId
+        }
+      },
+      loser: {
+        connect: {
+          id: loserId
+        }
+      }
+    }
+  });
+
+  revalidateTag('votes');
+
+  return {
+    severity: 'success',
+    message: 'Allt verkar ha gått bra.'
+  };
+}
