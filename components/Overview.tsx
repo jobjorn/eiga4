@@ -1,10 +1,9 @@
 import React from 'react';
 import { Typography } from '@mui/material';
 import { getSession } from '@auth0/nextjs-auth0';
-import { Prisma, PrismaClient } from '@prisma/client';
-import { unstable_cache } from 'next/cache';
 import { OverviewForm } from './OverviewForm';
 import { OverviewList } from './OverviewList';
+import { VotingMain } from './VotingMain';
 
 export const Overview: React.FC<{}> = async () => {
   const session = await getSession();
@@ -16,9 +15,7 @@ export const Overview: React.FC<{}> = async () => {
   return (
     <>
       <Typography variant="h4">Översikt</Typography>
-
-      <OverviewList />
-      <OverviewForm />
+      <VotingMain />
     </>
   );
 };

@@ -9,6 +9,9 @@ const prisma = new PrismaClient({
 });
 
 function createSubarrayProperty(arr) {
+  if (arr.length < 1) {
+    return arr;
+  }
   if (arr.length === 1) {
     arr[0].subarray = '';
     return arr;
