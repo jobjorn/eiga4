@@ -10,7 +10,7 @@ import {
   CardContent,
   Box,
   Alert,
-  Skeleton
+  CircularProgress
 } from '@mui/material';
 import { useRef, useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
@@ -142,13 +142,18 @@ export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     console.log('formElement', formElement);
   }, [statusMessage]);
 
+  if (list.length === 0) {
+    return;
+  }
+
   if (isLoading) {
-    return <Skeleton variant="rectangular" width={300} height={300} />;
+    return <CircularProgress />;
   }
 
   if (duels.length > 0) {
     return (
       <>
+        <Typography variant="h3">Välj din favorit</Typography>
         {statusMessage && (
           <Box mt={2}>
             <Alert severity={statusMessage.severity}>
@@ -202,11 +207,11 @@ export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     return (
       <>
         <Typography variant="h3">Sorterad lista!</Typography>
-        <Typography variant="body1">
+        <ol>
           {sortedList.map((list) => (
-            <div key={list.nameId}>{list.name.name}</div>
+            <li key={list.nameId}>{list.name.name}</li>
           ))}
-        </Typography>
+        </ol>
       </>
     );
   }

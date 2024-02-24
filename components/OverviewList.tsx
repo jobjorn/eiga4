@@ -3,8 +3,6 @@ import { Typography } from '@mui/material';
 import { getSession } from '@auth0/nextjs-auth0';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { unstable_cache } from 'next/cache';
-import { OverviewListForm } from './OverviewListForm';
-import { OverviewListTree } from './OverviewListTree';
 
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
@@ -65,8 +63,6 @@ export const OverviewList: React.FC<{}> = async () => {
           );
         })}
       </ul>
-      <OverviewListTree list={list} />
-      <OverviewListForm />
     </>
   );
 };
