@@ -1,7 +1,7 @@
 'use client';
 
 import { Vote } from '@prisma/client';
-import { ListWithNames } from './OverviewList';
+
 import {
   Typography,
   Grid,
@@ -16,6 +16,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { addVote } from 'app/actions';
+import { ListWithNames } from 'types/types';
 
 type Duel = {
   left: ListWithNames;

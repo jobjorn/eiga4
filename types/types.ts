@@ -1,3 +1,5 @@
+import { Prisma } from '@prisma/client';
+
 export interface Fruit {
   id: number;
   fruit: string;
@@ -11,3 +13,9 @@ export interface StatusMessage {
   severity: Severity;
   message: string;
 }
+
+export type ListWithNames = Prisma.ListGetPayload<{
+  include: {
+    name: true;
+  };
+}>;

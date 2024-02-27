@@ -6,16 +6,11 @@ import { unstable_cache } from 'next/cache';
 import { Typography } from '@mui/material';
 import { VotingDuel } from './VotingDuel';
 import { OverviewForm } from './OverviewForm';
+import { ListWithNames } from 'types/types';
 
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 });
-
-export type ListWithNames = Prisma.ListGetPayload<{
-  include: {
-    name: true;
-  };
-}>;
 
 const getList = unstable_cache(
   async (): Promise<ListWithNames[]> => {
