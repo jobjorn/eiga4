@@ -14,6 +14,11 @@ export default async function Page() {
         Kanske någon slags små kort snarare än en lista? Olika färger beroende
         på vem som lagt till namnet (du, din partner, båda)?
       </Typography>
+
+      <Typography variant="body1">
+        Måste också säkerställa att listan verkligen uppdateras direkt när man
+        skrivit in ett nytt namn.
+      </Typography>
       <NamesList />
       <NamesForm />
     </>
