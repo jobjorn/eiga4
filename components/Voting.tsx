@@ -23,7 +23,7 @@ type Duel = {
   right: ListWithNames;
 };
 
-export const VotingDuel: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
+export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
   votes
 }) => {

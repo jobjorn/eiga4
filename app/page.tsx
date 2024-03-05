@@ -1,7 +1,6 @@
 import { getSession } from '@auth0/nextjs-auth0';
-import { Overview } from 'components/Overview';
-import { Splash } from 'components/Splash';
 import { PrismaClient } from '@prisma/client';
+import { Typography } from '@mui/material';
 
 const prisma = new PrismaClient();
 
@@ -10,6 +9,8 @@ export default async function Page() {
   const user = session?.user ?? null;
 
   if (user) {
+    console.log('körs den här upserten en miljon gånger?');
+
     // Add/update user in the Prisma database
     await prisma.user.upsert({
       where: { sub: user.sub },
@@ -25,9 +26,17 @@ export default async function Page() {
         picture: user.picture
       }
     });
-
-    return <Overview />;
-  } else {
-    return <Splash />;
   }
+
+  return (
+    <>
+      <Typography variant="h3">
+        {user?.name ? `Inloggad som ${user.name}` : 'Ej inloggad'}
+      </Typography>
+      <Typography variant="body1">
+        Här har vi en splash. Vetefan vad vi ska ha här. Kanske ska man
+        omdirigeras automatiskt till /overview om man är inloggad?
+      </Typography>
+    </>
+  );
 }

@@ -14,7 +14,7 @@ import { useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Submit } from './Submit';
 
-export const OverviewForm: React.FC<{}> = () => {
+export const NamesForm: React.FC<{}> = () => {
   const { user, isLoading } = useUser();
 
   const addNamesWithId = addNames.bind(null, user?.sub);

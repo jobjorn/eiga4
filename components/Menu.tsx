@@ -26,8 +26,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from 'next/link';
 import { Stack } from '@mui/system';
-import { gravatar } from 'services/helpers';
-import { AddBox, Gavel, Settings, ViewList } from '@mui/icons-material';
+import { Settings, ViewList } from '@mui/icons-material';
 
 export const Menu: React.FC<{}> = () => {
   const [drawer, setDrawer] = useState(false);
@@ -74,9 +73,21 @@ const ToolbarList: React.FC<{}> = () => {
     <>
       {user ? (
         <Stack direction="row" spacing={1}>
-          <Link href="/" passHref>
+          <Link href="/overview" passHref>
             <Button key={'Översikt'} sx={{ color: 'white' }}>
               Översikt
+            </Button>
+          </Link>
+
+          <Link href="/names" passHref>
+            <Button key={'Namn'} sx={{ color: 'white' }}>
+              Namn
+            </Button>
+          </Link>
+
+          <Link href="/voting" passHref>
+            <Button key={'Rösta'} sx={{ color: 'white' }}>
+              Rösta
             </Button>
           </Link>
 
@@ -112,19 +123,37 @@ const DrawerList: React.FC<{}> = () => {
         <>
           <ListItem>
             <ListItemAvatar>
-              <Avatar src={user.picture || gravatar(user.email)} />
+              {user.picture && <Avatar src={user.picture} />}
             </ListItemAvatar>
             {user.name}
           </ListItem>
 
           <Divider />
 
-          <Link href="/" passHref>
+          <Link href="/overview" passHref>
             <ListItemButton key={'Översikt'}>
               <ListItemIcon>
                 <ViewList />
               </ListItemIcon>
               <ListItemText primary={'Översikt'} />
+            </ListItemButton>
+          </Link>
+
+          <Link href="/names" passHref>
+            <ListItemButton key={'Namn'}>
+              <ListItemIcon>
+                <ViewList />
+              </ListItemIcon>
+              <ListItemText primary={'Namn'} />
+            </ListItemButton>
+          </Link>
+
+          <Link href="/voting" passHref>
+            <ListItemButton key={'Rösta'}>
+              <ListItemIcon>
+                <ViewList />
+              </ListItemIcon>
+              <ListItemText primary={'Rösta'} />
             </ListItemButton>
           </Link>
 

@@ -1,8 +1,11 @@
 'use server';
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Vote } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { StatusMessage } from 'types/types';
+import { ListWithNames } from 'types/types';
+import { getSession } from '@auth0/nextjs-auth0';
+import { unstable_cache } from 'next/cache';
 
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
@@ -122,3 +125,59 @@ export async function addVote(
     message: 'Allt verkar ha gått bra.'
   };
 }
+
+export const getList = unstable_cache(
+  async (): Promise<ListWithNames[]> => {
+    const session = await getSession();
+    const user = session?.user ?? null;
+    if (!user) {
+      return [];
+    }
+
+    const result = await prisma.list.findMany({
+      where: {
+        userSub: user.sub
+      },
+      include: {
+        name: true
+      },
+      orderBy: {
+        name: {
+          name: 'asc'
+        }
+      }
+    });
+
+    if (result.length === 0) {
+      return [];
+    } else {
+      return result;
+    }
+  },
+  ['list'],
+  { tags: ['list'] }
+);
+
+export const getVotes = unstable_cache(
+  async (): Promise<Vote[]> => {
+    const session = await getSession();
+    const user = session?.user ?? null;
+    if (!user) {
+      return [];
+    }
+
+    const result = await prisma.vote.findMany({
+      where: {
+        userSub: user.sub
+      }
+    });
+
+    if (result.length === 0) {
+      return [];
+    } else {
+      return result;
+    }
+  },
+  ['votes'],
+  { tags: ['votes'] }
+);
