@@ -9,8 +9,6 @@ export default async function Page() {
   const user = session?.user ?? null;
 
   if (user) {
-    console.log('körs den här upserten en miljon gånger?');
-
     // Add/update user in the Prisma database
     await prisma.user.upsert({
       where: { sub: user.sub },
