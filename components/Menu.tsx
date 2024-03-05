@@ -36,11 +36,11 @@ export const Menu: React.FC<{}> = () => {
   const foldMenu = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
-    <AppBar position="relative" sx={{ marginBottom: '8px' }}>
+    <AppBar position="relative" sx={{ marginBottom: 2, boxShadow: 'none' }}>
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link href="/" style={{ textDecoration: 'none' }} passHref>
-            Namnväljaren 3.0
+            Namnväljaren
           </Link>
         </Typography>
         {foldMenu ? (
@@ -74,38 +74,38 @@ const ToolbarList: React.FC<{}> = () => {
       {user ? (
         <Stack direction="row" spacing={1}>
           <Link href="/overview" passHref>
-            <Button key={'Översikt'} sx={{ color: 'white' }}>
+            <Button key={'Översikt'} sx={{ color: 'black' }}>
               Översikt
             </Button>
           </Link>
 
           <Link href="/names" passHref>
-            <Button key={'Namn'} sx={{ color: 'white' }}>
+            <Button key={'Namn'} sx={{ color: 'black' }}>
               Namn
             </Button>
           </Link>
 
           <Link href="/voting" passHref>
-            <Button key={'Rösta'} sx={{ color: 'white' }}>
+            <Button key={'Rösta'} sx={{ color: 'black' }}>
               Rösta
             </Button>
           </Link>
 
           <Link href="/settings" passHref>
-            <Button key={'Inställningar'} sx={{ color: 'white' }}>
+            <Button key={'Inställningar'} sx={{ color: 'black' }}>
               <Settings />
             </Button>
           </Link>
           <Divider orientation="vertical" sx={{ height: 'auto' }} />
           <Link href="/api/auth/logout" passHref>
-            <Button key={'Logga ut'} sx={{ color: 'white' }}>
+            <Button key={'Logga ut'} sx={{ color: 'black' }}>
               Logga ut
             </Button>
           </Link>
         </Stack>
       ) : (
         <Link href="/api/auth/login" passHref>
-          <Button key={'Logga in'} sx={{ color: 'white' }}>
+          <Button key={'Logga in'} sx={{ color: 'black' }}>
             Logga in
           </Button>
         </Link>

@@ -1,6 +1,6 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
-import { Typography } from '@mui/material';
+import { Alert, Button, Stack, Typography } from '@mui/material';
 
 const prisma = new PrismaClient();
 
@@ -28,13 +28,34 @@ export default async function Page() {
 
   return (
     <>
-      <Typography variant="h3">
-        {user?.name ? `Inloggad som ${user.name}` : 'Ej inloggad'}
-      </Typography>
-      <Typography variant="body1">
-        Här har vi en splash. Vetefan vad vi ska ha här. Kanske ska man
-        omdirigeras automatiskt till /overview om man är inloggad?
-      </Typography>
+      <Stack spacing={2}>
+        <Typography variant="h3">
+          {user?.name ? `Inloggad som ${user.name}` : 'Ej inloggad'}
+        </Typography>
+        <Typography variant="body1">
+          Här har vi en splash. Vetefan vad vi ska ha här. Kanske ska man
+          omdirigeras automatiskt till /overview om man är inloggad?
+        </Typography>
+        <Stack spacing={1} direction="row">
+          <Button variant="contained">En knapp</Button>
+          <Button variant="outlined">En knapp till</Button>
+        </Stack>
+
+        <Stack spacing={1} direction="row">
+          <Button color="secondary" variant="contained">
+            En sekundär knapp
+          </Button>
+          <Button color="secondary" variant="outlined">
+            En sekundär knapp till
+          </Button>
+        </Stack>
+        <Stack spacing={1}>
+          <Alert severity="error">Error</Alert>
+          <Alert severity="warning">Warning</Alert>
+          <Alert severity="info">Info</Alert>
+          <Alert severity="success">Success</Alert>
+        </Stack>
+      </Stack>
     </>
   );
 }

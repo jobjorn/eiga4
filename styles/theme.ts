@@ -4,21 +4,17 @@ import { createTheme } from '@mui/material';
 
 export const theme = createTheme({
   palette: {
-    background: {
-      default: '#121212'
+    mode: 'light',
+    primary: {
+      main: '#67fc84',
+      contrastText: '#000'
     },
-    mode: 'dark'
+    secondary: {
+      main: '#9d8cff',
+      contrastText: '#000'
+    }
   },
   typography: {
     fontSize: 12
-  },
-  components: {
-    MuiCssBaseline: {
-      styleOverrides: `
-      a {
-          color: white;
-        }
-      `
-    }
   }
 });

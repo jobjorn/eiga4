@@ -155,13 +155,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     return (
       <>
         <Typography variant="h3">Välj din favorit</Typography>
-        {statusMessage && (
-          <Box mt={2}>
-            <Alert severity={statusMessage.severity}>
-              {statusMessage.message}
-            </Alert>
-          </Box>
-        )}
         <form action={formAction} ref={formElement}>
           <input type="hidden" name="left" value={duels[0].left.nameId} />
           <input type="hidden" name="right" value={duels[0].right.nameId} />
@@ -200,6 +193,13 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             </Grid>
           </Grid>
         </form>
+        {statusMessage && (
+          <Box mt={2}>
+            <Alert severity={statusMessage.severity}>
+              {statusMessage.message}
+            </Alert>
+          </Box>
+        )}
       </>
     );
   }
