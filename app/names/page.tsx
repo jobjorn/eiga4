@@ -1,8 +1,10 @@
 import { Typography } from '@mui/material';
+import { getList } from 'app/actions';
 import { NamesForm } from 'components/NamesForm';
 import { NamesList } from 'components/NamesList';
 
 export default async function Page() {
+  const list = await getList();
   return (
     <>
       <Typography variant="h3">Namn</Typography>
@@ -19,7 +21,7 @@ export default async function Page() {
         Måste också säkerställa att listan verkligen uppdateras direkt när man
         skrivit in ett nytt namn.
       </Typography>
-      <NamesList />
+      <NamesList list={list} />
       <NamesForm />
     </>
   );

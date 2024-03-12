@@ -1,19 +1,41 @@
-import React from 'react';
+'use client';
+import React, { useRef } from 'react';
 import { Typography } from '@mui/material';
-import { getList } from 'app/actions';
+import { removeName } from 'app/actions';
+import { ListWithNames } from 'types/types';
+import { Submit } from './Submit';
+import { useFormState } from 'react-dom';
 
-export const NamesList: React.FC<{}> = async () => {
-  const list = await getList();
+type NamesListProps = {
+  list: ListWithNames[];
+};
+export const NamesList = (props: NamesListProps) => {
+  const formElement = useRef<HTMLFormElement>(null);
+  const [statusMessage, formAction] = useFormState(removeName, null);
 
   return (
-    <ul>
-      {list.map((item) => {
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+      {props.list.map((item) => {
         return (
-          <li key={item.id}>
+          <div
+            key={item.id}
+            style={{
+              border: `1px solid red`,
+              display: `flex`,
+              justifyContent: `space-between`,
+              alignItems: `center`,
+              padding: '5px'
+            }}
+          >
             <Typography variant="body1">{item.name.name}</Typography>
-          </li>
+            <form action={formAction} ref={formElement}>
+              <input type="hidden" name="id" value={item.id} />
+              <Submit>Remove</Submit>
+            </form>
+            {/* <RemoveNameButton id={item.id} /> */}
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 };

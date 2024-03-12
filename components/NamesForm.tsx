@@ -1,5 +1,4 @@
 'use client';
-
 import React, { useRef, useEffect } from 'react';
 import {
   Alert,
@@ -20,11 +19,10 @@ export const NamesForm: React.FC<{}> = () => {
   const addNamesWithId = addNames.bind(null, user?.sub);
 
   const [statusMessage, formAction] = useFormState(addNamesWithId, null);
+
   const formElement = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    console.log('statusMessage', statusMessage);
-    console.log('formElement', formElement);
     if (statusMessage?.severity !== 'error' && formElement.current) {
       formElement.current.reset();
     }

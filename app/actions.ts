@@ -68,6 +68,24 @@ export async function addNames(
   };
 }
 
+export async function removeName(_previousState, formData: FormData) {
+  if (formData === null) {
+    return {
+      severity: 'error',
+      message: 'FormData var null.'
+    };
+  }
+
+  const id = parseInt(formData.get('id') as string, 10);
+  await prisma.list.delete({
+    where: {
+      id
+    }
+  });
+
+  revalidateTag('list');
+}
+
 export async function addVote(
   userSub: string,
   previousState: StatusMessage | null | undefined,
