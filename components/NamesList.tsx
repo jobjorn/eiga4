@@ -5,6 +5,7 @@ import { removeName } from 'app/actions';
 import { ListWithNames } from 'types/types';
 import { Submit } from './Submit';
 import { useFormState } from 'react-dom';
+import { theme } from 'styles/theme';
 
 type NamesListProps = {
   list: ListWithNames[];
@@ -20,7 +21,8 @@ export const NamesList = (props: NamesListProps) => {
           <div
             key={item.id}
             style={{
-              border: `1px solid red`,
+              border: `1px solid ${theme.palette.primary.main}`,
+              borderRadius: '5px',
               display: `flex`,
               justifyContent: `space-between`,
               alignItems: `center`,
@@ -32,7 +34,6 @@ export const NamesList = (props: NamesListProps) => {
               <input type="hidden" name="id" value={item.id} />
               <Submit>Remove</Submit>
             </form>
-            {/* <RemoveNameButton id={item.id} /> */}
           </div>
         );
       })}
