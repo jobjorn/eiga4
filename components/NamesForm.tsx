@@ -13,14 +13,9 @@ import { useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Submit } from './Submit';
 import { ListWithNames } from 'types/types';
-import { theme } from 'styles/theme';
 import { NamesList } from './NamesList';
 
-type Props = {
-  list: ListWithNames[];
-};
-
-export const NamesForm: React.FC<{}> = ({ list }: Props) => {
+export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
   const { user, isLoading } = useUser();
   const [textField, setTextField] = useState('');
   const [optimisticNameList, addOptimisticNameList] = useOptimistic(
