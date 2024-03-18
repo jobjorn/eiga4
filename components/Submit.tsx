@@ -2,14 +2,21 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@mui/material';
 import React from 'react';
 
-export const Submit: React.FC<{ children: React.ReactNode }> = ({
-  children
+export const Submit: React.FC<{ children: React.ReactNode; name?; value? }> = ({
+  children,
+  name,
+  value
 }) => {
   const { pending } = useFormStatus();
-  console.log('pending', pending);
 
   return (
-    <Button variant="contained" type="submit" disabled={pending}>
+    <Button
+      variant="contained"
+      type="submit"
+      disabled={pending}
+      name={name}
+      value={value}
+    >
       {children}
     </Button>
   );

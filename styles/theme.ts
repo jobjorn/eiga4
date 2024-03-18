@@ -10,11 +10,21 @@ export const theme = createTheme({
       contrastText: '#000'
     },
     secondary: {
+      light: '#DAEDEA',
       main: '#78BDB2',
       contrastText: '#000'
     }
   },
   typography: {
     fontSize: 12
+  },
+  components: {
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          borderRadius: 20
+        }
+      }
+    }
   }
 });

@@ -22,8 +22,18 @@ export const getUserWithPartners = unstable_cache(
         sub: user.sub
       },
       include: {
-        partnered: true,
-        partnering: true
+        partnered: {
+          include: {
+            partnering: true,
+            partnered: true
+          }
+        },
+        partnering: {
+          include: {
+            partnering: true,
+            partnered: true
+          }
+        }
       }
     });
 
@@ -37,8 +47,6 @@ export async function addPartnership(
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ) {
-  console.log({ previousState, formData });
-
   if (formData === null) {
     return {
       severity: 'error',
@@ -92,7 +100,7 @@ export async function addPartnership(
 
     return {
       severity: 'success',
-      message: `Inbjudan till <strong>${newPartnerEmail}</strong> skickad.`
+      message: `Inbjudan till ${newPartnerEmail} skickad.`
     };
   }
 
@@ -125,6 +133,233 @@ export async function addPartnership(
 
   return {
     severity: 'success',
-    message: `Inbjudan till <strong>${newPartnerEmail}</strong> skickad.`
+    message: `Inbjudan till ${newPartnerEmail} skickad.`
   };
+}
+
+export async function cancelPartnership(
+  previousState: StatusMessage | null | undefined,
+  formData: FormData
+) {
+  if (formData === null) {
+    return {
+      severity: 'error',
+      message: 'Ingen data i formuläret.'
+    };
+  }
+
+  const session = await getSession();
+  const user = session?.user ?? null;
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar ej vara inloggad.'
+    };
+  }
+
+  try {
+    await prisma.partnership.deleteMany({
+      where: {
+        partneringSub: user.sub
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    return {
+      severity: 'error',
+      message: 'Något gick fel.'
+    };
+  } finally {
+    revalidateTag('partners');
+
+    return {
+      severity: 'success',
+      message: 'Inbjudan avbröts.'
+    };
+  }
+}
+
+export async function invitationPartnership(
+  previousState: StatusMessage | null | undefined,
+  formData: FormData
+) {
+  if (formData === null) {
+    return {
+      severity: 'error',
+      message: 'Ingen data i formuläret.'
+    };
+  }
+
+  const session = await getSession();
+  const user = session?.user ?? null;
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar ej vara inloggad.'
+    };
+  }
+
+  const denyOrAccept = formData.get('invitation') as string;
+
+  if (denyOrAccept === 'accept') {
+    const invitee = await prisma.partnership.findFirst({
+      where: {
+        partneredSub: user.sub
+      }
+    });
+
+    if (invitee === null) {
+      return {
+        severity: 'error',
+        message: 'Inbjudan hittades ej.'
+      };
+    }
+
+    try {
+      await prisma.partnership.upsert({
+        where: {
+          partneringSub: invitee.partneringSub
+        },
+        update: {
+          partnered: {
+            connect: {
+              sub: user.sub
+            }
+          }
+        },
+        create: {
+          partnering: {
+            connect: {
+              sub: invitee.partneringSub
+            }
+          },
+          partnered: {
+            connect: {
+              sub: user.sub
+            }
+          }
+        }
+      });
+
+      await prisma.partnership.upsert({
+        where: {
+          partneringSub: user.sub
+        },
+        update: {
+          partnered: {
+            connect: {
+              sub: invitee.partneringSub
+            }
+          }
+        },
+        create: {
+          partnering: {
+            connect: {
+              sub: user.sub
+            }
+          },
+          partnered: {
+            connect: {
+              sub: invitee.partneringSub
+            }
+          }
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      return {
+        severity: 'error',
+        message: 'Något gick fel.'
+      };
+    } finally {
+      revalidateTag('partners');
+
+      return {
+        severity: 'success',
+        message: 'Inbjudan accepterades.'
+      };
+    }
+  } else if (denyOrAccept === 'deny') {
+    try {
+      await prisma.partnership.deleteMany({
+        where: {
+          OR: [
+            {
+              partneredSub: user.sub
+            },
+            {
+              partneringSub: user.sub
+            }
+          ]
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      return {
+        severity: 'error',
+        message: 'Något gick fel.'
+      };
+    } finally {
+      revalidateTag('partners');
+
+      return {
+        severity: 'success',
+        message: 'Inbjudan nekades.'
+      };
+    }
+  } else {
+    return {
+      severity: 'error',
+      message: 'Något gick fel.'
+    };
+  }
+}
+
+export async function severPartnership(
+  previousState: StatusMessage | null | undefined,
+  formData: FormData
+) {
+  if (formData === null) {
+    return {
+      severity: 'error',
+      message: 'Ingen data i formuläret.'
+    };
+  }
+
+  const session = await getSession();
+  const user = session?.user ?? null;
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar ej vara inloggad.'
+    };
+  }
+
+  try {
+    await prisma.partnership.deleteMany({
+      where: {
+        OR: [
+          {
+            partneredSub: user.sub
+          },
+          {
+            partneringSub: user.sub
+          }
+        ]
+      }
+    });
+  } catch (e) {
+    console.log(e);
+    return {
+      severity: 'error',
+      message: 'Något gick fel.'
+    };
+  } finally {
+    revalidateTag('partners');
+
+    return {
+      severity: 'success',
+      message: 'Partnerskapet avslutades.'
+    };
+  }
 }
