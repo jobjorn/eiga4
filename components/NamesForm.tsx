@@ -25,6 +25,12 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
     }
   );
 
+  /*
+    i andra funktioner har jag byggt så att den inloggades user.sub hämtas
+    direkt i funktionen istället för att skickas med såhär - det är säkrare
+    (pga mindre user input) och man slipper hela den här .bind-grejen, så
+    vi kanske borde ändra på den här också
+  */
   const addNamesWithId = addNames.bind(null, user?.sub);
 
   const [statusMessage, formAction] = useFormState(addNamesWithId, null);
@@ -107,6 +113,11 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
                 position: 0
               };
             });
+            /*
+              jag har gjort om det här så att den genererar array-items som är kompatibla med
+              typen ListWithNames, men useOptimistic verkar ändå inte funka så det är något
+              mer som är fel
+            */
 
             addOptimisticNameList(newNameList);
             await formAction(formData);
@@ -126,9 +137,6 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
         </form>
       </div>
       <NamesList list={optimisticNameList} />
-      <div
-        style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}
-      ></div>
     </>
   );
 };

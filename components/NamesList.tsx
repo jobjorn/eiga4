@@ -14,6 +14,16 @@ export const NamesList = (props: NamesListProps) => {
   const formElement = useRef<HTMLFormElement>(null);
   const [statusMessage, formAction] = useFormState(removeName, null);
 
+  /*
+  förslag: använd 1 form för hela listan och skicka med id:t
+  i submit-knappen istället för som hidden input (submit name="remove" value={id})
+  
+  förslag2: nu syns in statusMessage någonstans - visa eller ta bort?
+
+  förslag3: göra en liten komponent för namnen? då skulle man kunna slippa att ha
+  dubbla returns, jag tycker att det är lite förvirrande
+*/
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
       {props.list.map((item) => {

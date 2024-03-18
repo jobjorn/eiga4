@@ -11,6 +11,8 @@ const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 });
 
+/* nedan fem funktioner borde flyttas över till egna actions-filer där de hör hemma */
+
 export async function addNames(
   userSub: string,
   previousState: StatusMessage | null | undefined,
