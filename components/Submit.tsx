@@ -4,7 +4,7 @@ import React from 'react';
 
 export const Submit: React.FC<{
   children: React.ReactNode;
-  disabled: boolean;
+  disabled?: boolean;
 }> = ({ children, disabled }) => {
   const { pending } = useFormStatus();
 
