@@ -26,7 +26,7 @@ export const NamesForm: React.FC<{}> = ({ list }: Props) => {
   const [optimisticNameList, addOptimisticNameList] = useOptimistic(
     list,
     (state, newNames: ListWithNames[]) => {
-      return [...state, newNames];
+      return [...state, ...newNames];
     }
   );
 
@@ -98,18 +98,22 @@ export const NamesForm: React.FC<{}> = ({ list }: Props) => {
               .split(/[\n,]/)
               .map((name) => name.trim());
 
-            const convertToNameList = (namesArray) => {
-              const X = {
-                id: null,
-                name: { name: namesArray[0] },
-                nameId: null,
-                subArray: null,
-                userId: user.sub
+            const newNameList = namesArray.map((name, index) => {
+              return {
+                name: {
+                  id: -index,
+                  name: name,
+                  description: null
+                },
+                id: -index,
+                userSub: user.sub || '',
+                nameId: -index,
+                subarray: null,
+                position: 0
               };
-              return X;
-            };
+            });
 
-            addOptimisticNameList(convertToNameList(namesArray));
+            addOptimisticNameList(newNameList);
             await formAction(formData);
           }}
           ref={formElement}
