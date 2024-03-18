@@ -16,8 +16,6 @@ export async function addNames(
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ) {
-  console.log({ previousState, userSub, formData });
-
   if (formData === null) {
     return {
       severity: 'error',
@@ -68,7 +66,7 @@ export async function addNames(
   };
 }
 
-export async function removeName(_previousState, formData: FormData) {
+export async function removeName(previousState, formData: FormData) {
   if (formData === null) {
     return {
       severity: 'error',
@@ -91,8 +89,6 @@ export async function addVote(
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ): Promise<StatusMessage> {
-  console.log('addVote:', { previousState, userSub, formData });
-
   if (formData === null) {
     return {
       severity: 'error',
