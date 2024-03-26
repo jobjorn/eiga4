@@ -12,3 +12,20 @@ export type ListWithNames = Prisma.ListGetPayload<{
     name: true;
   };
 }>;
+
+export type UserWithPartners = Prisma.UserGetPayload<{
+  include: {
+    partnered: {
+      include: {
+        partnering: true;
+        partnered: true;
+      };
+    };
+    partnering: {
+      include: {
+        partnering: true;
+        partnered: true;
+      };
+    };
+  };
+}>;

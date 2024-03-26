@@ -23,11 +23,14 @@ model User {
 }
 
 model Partnership {
-    id            Int    @id @default(autoincrement())
-    partnering    User   @relation("partnering", fields: [partneringSub], references: [sub])
-    partneringSub String @map("partnering_sub") // relation scalar field
-    partnered     User   @relation("partnered", fields: [partneredSub], references: [sub])
-    partneredSub  String @map("partnered_sub") // relation scalar field
+    id             Int     @id @default(autoincrement())
+    partnering     User    @relation("partnering", fields: [partneringSub], references: [sub])
+    partneringSub  String  @unique @map("partnering_sub") // relation scalar field
+    partnered      User?   @relation("partnered", fields: [partneredSub], references: [sub])
+    partneredSub   String? @map("partnered_sub") // relation scalar field
+    partneredEmail String? @map("partnered_email")
+
+    partneredAccepted Boolean @default(false)
 
     @@map("partnerships")
 }
