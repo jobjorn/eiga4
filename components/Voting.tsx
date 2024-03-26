@@ -204,14 +204,22 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     );
   }
 
+  if (isFinallyMerged) {
+    return (
+      <>
+        <Typography variant="h3">Sorterad lista!</Typography>
+        <ol>
+          {sortedList.map((list) => (
+            <li key={list.nameId}>{list.name.name}</li>
+          ))}
+        </ol>
+      </>
+    );
+  }
+
   return (
     <>
-      <Typography variant="h3">Sorterad lista!</Typography>
-      <ol>
-        {sortedList.map((list) => (
-          <li key={list.nameId}>{list.name.name}</li>
-        ))}
-      </ol>
+      <Typography variant="body1">(Oklart vad som pågår)</Typography>
     </>
   );
 };
