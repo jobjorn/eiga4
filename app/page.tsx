@@ -31,10 +31,6 @@ export default async function Page() {
   return (
     <>
       <Stack spacing={2}>
-        <RoundedBox>
-          <p>Hej hopp</p>
-          <p>Hallå två</p>
-        </RoundedBox>
         <Typography variant="h3">
           {user?.name ? `Inloggad som ${user.name}` : 'Ej inloggad'}
         </Typography>
@@ -57,6 +53,11 @@ export default async function Page() {
         </Stack>
         <Stack spacing={1}>
           <PartnerBox>PartnerBox (används på Översiktssidan)</PartnerBox>
+
+          <RoundedBox>
+            <p>Hej hopp</p>
+            <p>Hallå två</p>
+          </RoundedBox>
           <Alert severity="error">Error</Alert>
           <Alert severity="warning">Warning</Alert>
           <Alert severity="info">Info</Alert>
