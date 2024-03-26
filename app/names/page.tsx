@@ -1,26 +1,38 @@
 import { Typography } from '@mui/material';
+import { getList } from 'app/actions';
 import { NamesForm } from 'components/NamesForm';
-import { NamesList } from 'components/NamesList';
+import { ListWithNames } from 'types/types';
 
 export default async function Page() {
+  const list: ListWithNames[] = await getList();
   return (
     <>
-      <Typography variant="h3">Namn</Typography>
-      <Typography variant="body1">
-        Här ska man kunna se vilka namn som är tillagda och även kunna lägga
-        till nya, ta bort gamla, klicka på namn för att se mer information.
-      </Typography>
-      <Typography variant="body1">
-        Kanske någon slags små kort snarare än en lista? Olika färger beroende
-        på vem som lagt till namnet (du, din partner, båda)?
-      </Typography>
-
-      <Typography variant="body1">
-        Måste också säkerställa att listan verkligen uppdateras direkt när man
-        skrivit in ett nytt namn.
-      </Typography>
-      <NamesList />
-      <NamesForm />
+      <ul>
+        <li>
+          <s>Se lista på namn</s>
+        </li>
+        <li>
+          <s>Lägg till namn</s>
+        </li>
+        <li>
+          <s>Ta bort namn</s>
+        </li>
+        <li>optimistic update -lägga till namn - ta bort namn</li>
+        <li>
+          Olika färger beroende på vem som lagt till namnet (du, din partner,
+          båda)?
+        </li>
+      </ul>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px'
+        }}
+      >
+        <Typography variant="h3">Namn</Typography>
+        <NamesForm list={list} />
+      </div>
     </>
   );
 }

@@ -2,10 +2,11 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@mui/material';
 import React from 'react';
 
-export const Submit: React.FC<{ children: React.ReactNode; name?; value? }> = ({
+export const Submit: React.FC<{ children: React.ReactNode; name?; value?; disabled?: boolean; }> = ({
   children,
   name,
-  value
+  value,
+    disabled
 }) => {
   const { pending } = useFormStatus();
 
@@ -13,7 +14,7 @@ export const Submit: React.FC<{ children: React.ReactNode; name?; value? }> = ({
     <Button
       variant="contained"
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
       name={name}
       value={value}
     >
