@@ -9,19 +9,12 @@ export default async function Page() {
     <>
       <ul>
         <li>
-          <s>Se lista på namn</s>
-        </li>
-        <li>
-          <s>Lägg till namn</s>
-        </li>
-        <li>
-          <s>Ta bort namn</s>
-        </li>
-        <li>optimistic update -lägga till namn - ta bort namn</li>
-        <li>
           Olika färger beroende på vem som lagt till namnet (du, din partner,
           båda)?
         </li>
+        <li>Namnen ovanför lägg till rutan</li>
+        <li>Ett kryss istället för "Remove knappen"</li>
+        <li>Mer kompakt, kolumner (beroende på sidans bredd) (css columns)</li>
       </ul>
       <div
         style={{
