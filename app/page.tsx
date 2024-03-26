@@ -2,6 +2,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { Alert, Button, Stack, Typography } from '@mui/material';
 import { PartnerBox } from 'components/PartnerBox';
+import { RoundedBox } from './uicomponents/RoundedBox';
 
 const prisma = new PrismaClient();
 
@@ -30,6 +31,10 @@ export default async function Page() {
   return (
     <>
       <Stack spacing={2}>
+        <RoundedBox>
+          <p>Hej hopp</p>
+          <p>Hallå två</p>
+        </RoundedBox>
         <Typography variant="h3">
           {user?.name ? `Inloggad som ${user.name}` : 'Ej inloggad'}
         </Typography>
