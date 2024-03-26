@@ -15,9 +15,6 @@ export const theme = createTheme({
       contrastText: '#000'
     }
   },
-  typography: {
-    fontSize: 16
-  },
   components: {
     MuiAlert: {
       styleOverrides: {
