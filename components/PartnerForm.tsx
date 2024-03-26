@@ -59,6 +59,8 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
     statusMessageSever
   ]);
 
+  /* säkerställ att de här verkligen funkar cachingmässigt */
+
   if (user === null) {
     return (
       <PartnerBox>

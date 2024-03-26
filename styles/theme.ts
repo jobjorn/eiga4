@@ -16,7 +16,7 @@ export const theme = createTheme({
     }
   },
   typography: {
-    fontSize: 12
+    fontSize: 16
   },
   components: {
     MuiAlert: {
