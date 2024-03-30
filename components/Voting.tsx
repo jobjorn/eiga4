@@ -17,25 +17,31 @@ import { useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { addVote } from 'app/actions';
 import { ListWithNames } from 'types/types';
+import { colors } from 'app/uicomponents/colors';
 
 type Duel = {
   left: ListWithNames;
   right: ListWithNames;
 };
 
+type InProgressList = {
+  name: string;
+  position: number;
+  id: number;
+};
+
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
   votes
 }) => {
-  console.log('votes', votes);
-
   const [duels, setDuels] = useState<Duel[]>([]);
   const [sortedList, setSortedList] = useState<ListWithNames[]>([]);
   const [isFinallyMerged, setIsFinallyMerged] = useState(false);
+  const [inProgressList, setInProgressList] = useState<InProgressList[]>([]);
 
   // Recursive function to perform merge sort on an array of ListWithNames
   const mergeSort = (list: ListWithNames[]): ListWithNames[] => {
-    console.log('initierar en mergeSort', list.length);
+    //   console.log('initierar en mergeSort', list.length);
 
     // Base case: if the array has 1 or 0 elements, it is already sorted
     if (list.length <= 1) {
@@ -58,8 +64,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     left: ListWithNames[],
     right: ListWithNames[]
   ): ListWithNames[] => {
-    console.log('initierar en merge', left.length, right.length);
-
     // Initialize an empty array to store the merged result
     let result: ListWithNames[] = [];
 
@@ -85,11 +89,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
         result.push(right[j]);
         j++;
       } else {
-        console.log(
-          'Här behövs en jämförelse',
-          left[i].name.name,
-          right[j].name.name
-        );
         setDuels((prev) => [
           ...prev,
           {
@@ -116,7 +115,29 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       setIsFinallyMerged(true);
     }
 
-    // Return the merged and sorted array
+    result.map((name, index) => {
+      setInProgressList((prev) => {
+        let previousItem = prev.find((item) => item.name === name.name.name);
+
+        if (previousItem && previousItem.position < index) {
+          const updatedList = prev.filter(
+            (item) => item.name !== name.name.name
+          );
+          return [
+            ...updatedList,
+            { name: name.name.name, position: index, id: name.nameId }
+          ];
+        } else if (!previousItem) {
+          return [
+            ...prev,
+            { name: name.name.name, position: index, id: name.nameId }
+          ];
+        } else {
+          return prev;
+        }
+      });
+    });
+
     return result;
   };
 
@@ -124,12 +145,9 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     setDuels([]);
 
     const newList = mergeSort(list);
-    console.log('nu kör vi useeffecten som sorterar listan');
 
     setSortedList(newList);
   }, [votes]);
-
-  console.log('duels', duels);
 
   const { user, isLoading } = useUser();
 
@@ -137,11 +155,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
 
   const [statusMessage, formAction] = useFormState(addVoteWithId, null);
   const formElement = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    console.log('statusMessage', statusMessage);
-    console.log('formElement', formElement);
-  }, [statusMessage]);
 
   if (list.length === 0) {
     return;
@@ -156,42 +169,7 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       <>
         <Typography variant="h3">Välj din favorit</Typography>
         <form action={formAction} ref={formElement}>
-          <input type="hidden" name="left" value={duels[0].left.nameId} />
-          <input type="hidden" name="right" value={duels[0].right.nameId} />
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Card>
-                <CardActionArea name="winner" value="left" type="submit">
-                  <CardContent
-                    sx={{
-                      aspectRatio: '1/1',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    {duels[0].left.name.name}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={6}>
-              <Card>
-                <CardActionArea name="winner" value="right" type="submit">
-                  <CardContent
-                    sx={{
-                      aspectRatio: '1/1',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    {duels[0].right.name.name}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          </Grid>
+          <Duels duels={duels} />
         </form>
         {statusMessage && (
           <Box mt={2}>
@@ -200,6 +178,8 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             </Alert>
           </Box>
         )}
+        <ListInProgress inProgressList={inProgressList} list={list} />
+        <Votes votes={votes} list={list} />
       </>
     );
   }
@@ -207,12 +187,13 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   if (isFinallyMerged) {
     return (
       <>
-        <Typography variant="h3">Sorterad lista!</Typography>
+        <Typography variant="h3">Röstningen är slutförd</Typography>
         <ol>
           {sortedList.map((list) => (
             <li key={list.nameId}>{list.name.name}</li>
           ))}
         </ol>
+        <Votes votes={votes} list={list} />
       </>
     );
   }
@@ -221,5 +202,155 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     <>
       <Typography variant="body1">(Oklart vad som pågår)</Typography>
     </>
+  );
+};
+
+const ListInProgress: React.FC<{
+  inProgressList: InProgressList[];
+  list: ListWithNames[];
+}> = ({ inProgressList, list }) => {
+  const maxPosition = Math.max(...inProgressList.map((list) => list.position));
+
+  const [combinedList, setCombinedList] = useState<InProgressList[]>([]);
+  const [listItems, setListItems] = useState<JSX.Element[]>([]);
+
+  useEffect(() => {
+    let newCombinedList = inProgressList;
+
+    list.map((item) => {
+      if (
+        !inProgressList.some(
+          (inProgressItem) => inProgressItem.name === item.name.name
+        )
+      ) {
+        newCombinedList.push({
+          name: item.name.name,
+          position: 0,
+          id: item.nameId
+        });
+      }
+    });
+
+    console.log('newCombinedList', newCombinedList);
+    setCombinedList(newCombinedList);
+  }, [inProgressList, list]);
+
+  useEffect(() => {
+    let newListItems: JSX.Element[] = [];
+    for (let i = 0; i <= maxPosition; i++) {
+      console.log('i', i);
+
+      const items = inProgressList
+        .filter((item) => item.position === i)
+        .map((item) => {
+          return <NameBlob key={item.id} name={item.name} />;
+        });
+      newListItems.push(<li key={i}>{items}</li>);
+    }
+
+    console.log('newListItems', newListItems);
+
+    setListItems(newListItems);
+  }, [combinedList]);
+
+  return (
+    <>
+      <Typography variant="h3">Listan (ej färdig)</Typography>
+      <ol>{listItems}</ol>
+    </>
+  );
+};
+
+const Votes: React.FC<{ votes: Vote[]; list: ListWithNames[] }> = ({
+  votes,
+  list
+}) => {
+  const [votingLog, setVotingLog] = useState<string[]>([]);
+
+  useEffect(() => {
+    let newVotingLog: string[] = [];
+    votes.map((vote) => {
+      const winner = list.find((item) => item.nameId === vote.winnerId) || {
+        name: { name: '???' }
+      };
+      const loser = list.find((item) => item.nameId === vote.loserId) || {
+        name: { name: '???' }
+      };
+      newVotingLog.push(`${winner.name.name} > ${loser.name.name}`);
+    });
+
+    setVotingLog(newVotingLog);
+  }, [votes]);
+
+  return (
+    <>
+      <Typography variant="h3">Röstningslogg</Typography>
+      <ul style={{ columns: 3 }}>
+        {votingLog.map((log, index) => (
+          <li key={index}>{log}</li>
+        ))}
+      </ul>
+    </>
+  );
+};
+
+const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
+  return (
+    <>
+      <input type="hidden" name="left" value={duels[0].left.nameId} />
+      <input type="hidden" name="right" value={duels[0].right.nameId} />
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Card variant="outlined">
+            <CardActionArea name="winner" value="left" type="submit">
+              <CardContent
+                sx={{
+                  aspectRatio: '1/1',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: colors.secondary.light,
+                  fontSize: '3em'
+                }}
+              >
+                {duels[0].left.name.name}
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Grid>
+        <Grid item xs={6}>
+          <Card variant="outlined">
+            <CardActionArea name="winner" value="right" type="submit">
+              <CardContent
+                sx={{
+                  aspectRatio: '1/1',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: colors.secondary.light,
+                  fontSize: '3em'
+                }}
+              >
+                {duels[0].right.name.name}
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        </Grid>
+      </Grid>
+    </>
+  );
+};
+
+const NameBlob: React.FC<{ name: string }> = ({ name }) => {
+  return (
+    <span
+      style={{
+        backgroundColor: colors.secondary.light,
+        padding: '5px',
+        borderRadius: '5px'
+      }}
+    >
+      {name}
+    </span>
   );
 };
