@@ -12,7 +12,6 @@ export default async function Page() {
           Olika färger beroende på vem som lagt till namnet (du, din partner,
           båda)?
         </li>
-        <li>Namnen ovanför lägg till rutan</li>
         <li>Ett kryss istället för "Remove knappen"</li>
         <li>Mer kompakt, kolumner (beroende på sidans bredd) (css columns)</li>
       </ul>

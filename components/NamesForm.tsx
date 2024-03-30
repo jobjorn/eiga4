@@ -77,6 +77,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
 
   return (
     <>
+      <NamesList list={optimisticNameList} />
       <div
         style={{
           display: 'flex',
@@ -136,7 +137,6 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
           </Stack>
         </form>
       </div>
-      <NamesList list={optimisticNameList} />
     </>
   );
 };
