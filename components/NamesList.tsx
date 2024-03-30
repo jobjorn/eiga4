@@ -25,7 +25,14 @@ export const NamesList = (props: NamesListProps) => {
 */
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+    <div
+      style={{
+        /*       display: 'flex',
+        flexDirection: 'column',
+        gap: '5px', */
+        columns: '2'
+      }}
+    >
       {props.list.map((item) => {
         return (
           <div
@@ -42,7 +49,7 @@ export const NamesList = (props: NamesListProps) => {
             <Typography variant="body1">{item.name.name}</Typography>
             <form action={formAction} ref={formElement}>
               <input type="hidden" name="id" value={item.id} />
-              <Submit>Remove</Submit>
+              <Submit>X</Submit>
             </form>
           </div>
         );
