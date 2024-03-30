@@ -3,6 +3,12 @@
     https://www.joshwcomeau.com/css/custom-css-reset/
 */
 // RESET
+:root {
+  --primary-main-color:#F2BF64;
+  --secondary-main-color:#78BDB2;
+  --secondary-light-color:#DAEDEA;
+  --text-color: #333;
+}
 *,
 *::before,
 *::after {

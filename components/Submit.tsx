@@ -1,13 +1,14 @@
 import { useFormStatus } from 'react-dom';
-import { Button } from '@mui/material';
+/* import { Button } from '@mui/material'; */
 import React from 'react';
+import { Button } from 'styles/Button/Button';
 
-export const Submit: React.FC<{ children: React.ReactNode; name?; value?; disabled?: boolean; }> = ({
-  children,
-  name,
-  value,
-    disabled
-}) => {
+export const Submit: React.FC<{
+  children: React.ReactNode;
+  name?;
+  value?;
+  disabled?: boolean;
+}> = ({ children, name, value, disabled }) => {
   const { pending } = useFormStatus();
 
   return (
