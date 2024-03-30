@@ -27,10 +27,9 @@ export const NamesList = (props: NamesListProps) => {
   return (
     <div
       style={{
-        /*       display: 'flex',
-        flexDirection: 'column',
-        gap: '5px', */
-        columns: '2'
+        display: 'grid',
+        gap: '5px',
+        gridTemplateColumns: '170px 170px 170px'
       }}
     >
       {props.list.map((item) => {
@@ -43,7 +42,7 @@ export const NamesList = (props: NamesListProps) => {
               display: `flex`,
               justifyContent: `space-between`,
               alignItems: `center`,
-              padding: '5px'
+              padding: '3px'
             }}
           >
             <Typography variant="body1">{item.name.name}</Typography>
