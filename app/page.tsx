@@ -1,6 +1,8 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { Alert, Button, Stack, Typography } from '@mui/material';
+import { PartnerBox } from 'components/PartnerBox';
+import { RoundedBox } from './uicomponents/RoundedBox';
 
 const prisma = new PrismaClient();
 
@@ -50,6 +52,12 @@ export default async function Page() {
           </Button>
         </Stack>
         <Stack spacing={1}>
+          <PartnerBox>PartnerBox (används på Översiktssidan)</PartnerBox>
+
+          <RoundedBox>
+            <p>Hej hopp</p>
+            <p>Hallå två</p>
+          </RoundedBox>
           <Alert severity="error">Error</Alert>
           <Alert severity="warning">Warning</Alert>
           <Alert severity="info">Info</Alert>
