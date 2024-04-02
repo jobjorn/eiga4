@@ -1,6 +1,14 @@
 'use client';
 
-import { Alert, Avatar, Skeleton, TextField } from '@mui/material';
+import {
+  Alert,
+  Avatar,
+  Button,
+  Modal,
+  Skeleton,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { Submit } from './Submit';
@@ -13,6 +21,7 @@ import {
 } from 'app/overview/actions';
 import { StatusMessage, UserWithPartners } from 'types/types';
 import { PartnerBox } from './PartnerBox';
+import { colors } from 'app/uicomponents/colors';
 
 export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
   user
@@ -30,11 +39,21 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
     severPartnership,
     null
   );
-  const formElement = useRef<HTMLFormElement>(null);
-
   const [statusMessage, setStatusMessage] = useState<StatusMessage | null>(
     null
   );
+
+  const [cancelModalOpen, setCancelModalOpen] = useState<boolean>(false);
+  const handleCloseCancelModal = () => {
+    console.log('close cancel modal!');
+    setCancelModalOpen(false);
+  };
+  const handleOpenCancelModal = () => {
+    console.log('open cancel modal!');
+    setCancelModalOpen(true);
+  };
+
+  const formElement = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     let newStatusMessage;
@@ -143,7 +162,47 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
   } else if (user.partnering.length > 0 && user.partnered.length > 0) {
     // Om användaren har en partner
     return (
-      <form ref={formElement} action={formActionSever}>
+      <>
+        <Modal
+          open={cancelModalOpen}
+          onClose={handleCloseCancelModal}
+          sx={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Box
+            style={{
+              borderRadius: '25px',
+              padding: '25px',
+              backgroundColor: colors.error.light
+            }}
+          >
+            <form ref={formElement} action={formActionSever}>
+              <Typography variant="h4">Avbryta partnerskap?</Typography>
+              <Typography variant="body1" sx={{ paddingBottom: 1 }}>
+                Om du går vidare raderas partnerskapet för båda parter.
+              </Typography>
+              <Stack
+                direction="row"
+                spacing={1}
+                style={{ justifyContent: 'right' }}
+              >
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleCloseCancelModal}
+                >
+                  Nej, avvakta
+                </Button>
+                <Submit color="error">Ja, avsluta</Submit>
+              </Stack>
+            </form>
+          </Box>
+        </Modal>
         <PartnerBox>
           <Box style={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             <p>Du är partner med</p>
@@ -157,7 +216,15 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
               <strong>{user.partnering[0].partnered?.name}</strong>.
             </p>
           </Box>
-          <Submit>Avbryt partnerskap</Submit>
+          <Button
+            variant="contained"
+            onClick={() => {
+              console.log('knapptryck');
+              handleOpenCancelModal();
+            }}
+          >
+            Avsluta partnerskap
+          </Button>
         </PartnerBox>
 
         {statusMessage && (
@@ -167,7 +234,7 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
             </Alert>
           </Box>
         )}
-      </form>
+      </>
     );
   } else {
     return <Box>Okänt fel</Box>;
