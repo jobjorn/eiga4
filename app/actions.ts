@@ -11,13 +11,13 @@ const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 });
 
+/* nedan fem funktioner borde flyttas över till egna actions-filer där de hör hemma */
+
 export async function addNames(
   userSub: string,
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ) {
-  console.log({ previousState, userSub, formData });
-
   if (formData === null) {
     return {
       severity: 'error',
@@ -68,13 +68,29 @@ export async function addNames(
   };
 }
 
+export async function removeName(previousState, formData: FormData) {
+  if (formData === null) {
+    return {
+      severity: 'error',
+      message: 'FormData var null.'
+    };
+  }
+
+  const id = parseInt(formData.get('id') as string, 10);
+  await prisma.list.delete({
+    where: {
+      id
+    }
+  });
+
+  revalidateTag('list');
+}
+
 export async function addVote(
   userSub: string,
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ): Promise<StatusMessage> {
-  console.log('addVote:', { previousState, userSub, formData });
-
   if (formData === null) {
     return {
       severity: 'error',
