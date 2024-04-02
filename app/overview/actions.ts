@@ -225,7 +225,8 @@ export async function invitationPartnership(
             connect: {
               sub: user.sub
             }
-          }
+          },
+          partneredAccepted: true
         },
         create: {
           partnering: {
@@ -237,7 +238,8 @@ export async function invitationPartnership(
             connect: {
               sub: user.sub
             }
-          }
+          },
+          partneredAccepted: true
         }
       });
 
@@ -250,7 +252,8 @@ export async function invitationPartnership(
             connect: {
               sub: invitee.partneringSub
             }
-          }
+          },
+          partneredAccepted: true
         },
         create: {
           partnering: {
@@ -262,7 +265,8 @@ export async function invitationPartnership(
             connect: {
               sub: invitee.partneringSub
             }
-          }
+          },
+          partneredAccepted: true
         }
       });
     } catch (e) {
