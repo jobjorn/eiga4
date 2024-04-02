@@ -63,7 +63,7 @@ export const VotingListInProgress: React.FC<{
   );
 };
 
-const NameBlob: React.FC<{ name: string }> = ({ name }) => {
+export const NameBlob: React.FC<{ name: string }> = ({ name }) => {
   return (
     <span
       style={{

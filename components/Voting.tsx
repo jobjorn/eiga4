@@ -10,6 +10,7 @@ import { Duel, InProgressList, ListWithNames } from 'types/types';
 import { VotingLog } from './VotingLog';
 import { VotingListInProgress } from './VotingListInProgress';
 import { Duels } from './VotingDuels';
+import { VotingListComplete } from './VotingListComplete';
 
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
@@ -168,12 +169,7 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   if (isFinallyMerged) {
     return (
       <>
-        <Typography variant="h3">Röstningen är slutförd</Typography>
-        <ol>
-          {sortedList.map((list) => (
-            <li key={list.nameId}>{list.name.name}</li>
-          ))}
-        </ol>
+        <VotingListComplete sortedList={sortedList} />
         <VotingLog votes={votes} list={list} />
       </>
     );

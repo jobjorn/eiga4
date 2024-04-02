@@ -9,7 +9,7 @@ export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
       <input type="hidden" name="right" value={duels[0].right.nameId} />
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Card variant="outlined">
+          <Card style={{ borderRadius: '30px' }}>
             <CardActionArea name="winner" value="left" type="submit">
               <CardContent
                 sx={{
@@ -18,7 +18,7 @@ export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   backgroundColor: colors.secondary.light,
-                  fontSize: '3em'
+                  fontSize: '2em'
                 }}
               >
                 {duels[0].left.name.name}
@@ -27,7 +27,7 @@ export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
           </Card>
         </Grid>
         <Grid item xs={6}>
-          <Card variant="outlined">
+          <Card style={{ borderRadius: '30px' }}>
             <CardActionArea name="winner" value="right" type="submit">
               <CardContent
                 sx={{
@@ -36,7 +36,7 @@ export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   backgroundColor: colors.secondary.light,
-                  fontSize: '3em'
+                  fontSize: '2em'
                 }}
               >
                 {duels[0].right.name.name}
