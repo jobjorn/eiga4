@@ -139,15 +139,14 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
       <form ref={formElement} action={formActionInvitation}>
         <PartnerBox>
           <p style={{ flexGrow: 1 }}>
-            Du har en inbjudan från{' '}
-            <strong>{user.partnered[0].partnering.email}</strong> som vill bli
-            din partner.
+            Vill du bli partner med{' '}
+            <strong>{user.partnered[0].partnering.email}</strong>?
           </p>
           <Submit name="invitation" value="accept">
-            Acceptera
+            Ja
           </Submit>
           <Submit name="invitation" value="deny">
-            Neka
+            Nej
           </Submit>
         </PartnerBox>
         {statusMessage && (
