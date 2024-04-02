@@ -1,34 +1,15 @@
 'use client';
 
 import { Vote } from '@prisma/client';
-
-import {
-  Typography,
-  Grid,
-  Card,
-  CardActionArea,
-  CardContent,
-  Box,
-  Alert,
-  CircularProgress
-} from '@mui/material';
+import { Typography, Box, Alert, CircularProgress } from '@mui/material';
 import { useRef, useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { addVote } from 'app/actions';
-import { ListWithNames } from 'types/types';
-import { colors } from 'app/uicomponents/colors';
-
-type Duel = {
-  left: ListWithNames;
-  right: ListWithNames;
-};
-
-type InProgressList = {
-  name: string;
-  position: number;
-  id: number;
-};
+import { Duel, InProgressList, ListWithNames } from 'types/types';
+import { VotingLog } from './VotingLog';
+import { VotingListInProgress } from './VotingListInProgress';
+import { Duels } from './VotingDuels';
 
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
@@ -156,12 +137,12 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   const [statusMessage, formAction] = useFormState(addVoteWithId, null);
   const formElement = useRef<HTMLFormElement>(null);
 
-  if (list.length === 0) {
-    return;
-  }
-
   if (isLoading) {
     return <CircularProgress />;
+  }
+
+  if (list.length === 0) {
+    return <Alert severity="error">Inga namn att rösta på!</Alert>;
   }
 
   if (duels.length > 0) {
@@ -178,8 +159,8 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             </Alert>
           </Box>
         )}
-        <ListInProgress inProgressList={inProgressList} list={list} />
-        <Votes votes={votes} list={list} />
+        <VotingListInProgress inProgressList={inProgressList} list={list} />
+        <VotingLog votes={votes} list={list} />
       </>
     );
   }
@@ -193,164 +174,14 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             <li key={list.nameId}>{list.name.name}</li>
           ))}
         </ol>
-        <Votes votes={votes} list={list} />
+        <VotingLog votes={votes} list={list} />
       </>
     );
   }
 
   return (
     <>
-      <Typography variant="body1">(Oklart vad som pågår)</Typography>
+      <Alert severity="error">Något verkar ha gått fel.</Alert>
     </>
-  );
-};
-
-const ListInProgress: React.FC<{
-  inProgressList: InProgressList[];
-  list: ListWithNames[];
-}> = ({ inProgressList, list }) => {
-  const maxPosition = Math.max(...inProgressList.map((list) => list.position));
-
-  const [combinedList, setCombinedList] = useState<InProgressList[]>([]);
-  const [listItems, setListItems] = useState<JSX.Element[]>([]);
-
-  useEffect(() => {
-    let newCombinedList = inProgressList;
-
-    list.map((item) => {
-      if (
-        !inProgressList.some(
-          (inProgressItem) => inProgressItem.name === item.name.name
-        )
-      ) {
-        newCombinedList.push({
-          name: item.name.name,
-          position: 0,
-          id: item.nameId
-        });
-      }
-    });
-
-    console.log('newCombinedList', newCombinedList);
-    setCombinedList(newCombinedList);
-  }, [inProgressList, list]);
-
-  useEffect(() => {
-    let newListItems: JSX.Element[] = [];
-    for (let i = 0; i <= maxPosition; i++) {
-      console.log('i', i);
-
-      const items = inProgressList
-        .filter((item) => item.position === i)
-        .map((item) => {
-          return <NameBlob key={item.id} name={item.name} />;
-        });
-      newListItems.push(<li key={i}>{items}</li>);
-    }
-
-    console.log('newListItems', newListItems);
-
-    setListItems(newListItems);
-  }, [combinedList]);
-
-  return (
-    <>
-      <Typography variant="h3">Listan (ej färdig)</Typography>
-      <ol>{listItems}</ol>
-    </>
-  );
-};
-
-const Votes: React.FC<{ votes: Vote[]; list: ListWithNames[] }> = ({
-  votes,
-  list
-}) => {
-  const [votingLog, setVotingLog] = useState<string[]>([]);
-
-  useEffect(() => {
-    let newVotingLog: string[] = [];
-    votes.map((vote) => {
-      const winner = list.find((item) => item.nameId === vote.winnerId) || {
-        name: { name: '???' }
-      };
-      const loser = list.find((item) => item.nameId === vote.loserId) || {
-        name: { name: '???' }
-      };
-      newVotingLog.push(`${winner.name.name} > ${loser.name.name}`);
-    });
-
-    setVotingLog(newVotingLog);
-  }, [votes]);
-
-  return (
-    <>
-      <Typography variant="h3">Röstningslogg</Typography>
-      <ul style={{ columns: 3 }}>
-        {votingLog.map((log, index) => (
-          <li key={index}>{log}</li>
-        ))}
-      </ul>
-    </>
-  );
-};
-
-const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
-  return (
-    <>
-      <input type="hidden" name="left" value={duels[0].left.nameId} />
-      <input type="hidden" name="right" value={duels[0].right.nameId} />
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Card variant="outlined">
-            <CardActionArea name="winner" value="left" type="submit">
-              <CardContent
-                sx={{
-                  aspectRatio: '1/1',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: colors.secondary.light,
-                  fontSize: '3em'
-                }}
-              >
-                {duels[0].left.name.name}
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Card variant="outlined">
-            <CardActionArea name="winner" value="right" type="submit">
-              <CardContent
-                sx={{
-                  aspectRatio: '1/1',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: colors.secondary.light,
-                  fontSize: '3em'
-                }}
-              >
-                {duels[0].right.name.name}
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        </Grid>
-      </Grid>
-    </>
-  );
-};
-
-const NameBlob: React.FC<{ name: string }> = ({ name }) => {
-  return (
-    <span
-      style={{
-        backgroundColor: colors.secondary.light,
-        padding: '5px',
-        borderRadius: '5px'
-      }}
-    >
-      {name}
-    </span>
   );
 };
