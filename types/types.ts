@@ -10,6 +10,7 @@ export interface StatusMessage {
 export type ListWithNames = Prisma.ListGetPayload<{
   include: {
     name: true;
+    user: true;
   };
 }>;
 

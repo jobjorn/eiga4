@@ -8,7 +8,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { unstable_cache } from 'next/cache';
 
 const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error']
+  log: ['warn', 'error']
 });
 
 /* nedan fem funktioner borde flyttas över till egna actions-filer där de hör hemma */
@@ -142,7 +142,7 @@ export async function addVote(
   };
 }
 
-export const getList = unstable_cache(
+export const getNameList = unstable_cache(
   async (): Promise<ListWithNames[]> => {
     const session = await getSession();
     const user = session?.user ?? null;
@@ -150,24 +150,57 @@ export const getList = unstable_cache(
       return [];
     }
 
-    const result = await prisma.list.findMany({
+    const findPartner = await prisma.user.findUnique({
       where: {
-        userSub: user.sub
+        sub: user.sub
       },
       include: {
-        name: true
-      },
-      orderBy: {
-        name: {
-          name: 'asc'
-        }
+        partnering: true
       }
     });
 
-    if (result.length === 0) {
-      return [];
+    if (
+      findPartner?.partnering[0].partneredAccepted === false &&
+      findPartner?.partnering[0].partneredSub !== null
+    ) {
+      const partnerResult = await prisma.list.findMany({
+        where: {
+          userSub: findPartner.partnering[0].partneredSub
+        },
+        include: {
+          name: true,
+          user: true
+        },
+        orderBy: {
+          name: {
+            name: 'asc'
+          }
+        }
+      });
+
+      const userResult = await prisma.list.findMany({
+        where: {
+          userSub: user.sub
+        },
+        include: {
+          name: true,
+          user: true
+        },
+        orderBy: {
+          name: {
+            name: 'asc'
+          }
+        }
+      });
+
+      const allNames = [...partnerResult, ...userResult].sort((a, b) => {
+        return a.name.name.localeCompare(b.name.name);
+      });
+      /* TODO sort the allNames on names */
+
+      return allNames;
     } else {
-      return result;
+      return [];
     }
   },
   ['list'],

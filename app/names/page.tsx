@@ -1,10 +1,11 @@
 import { Typography } from '@mui/material';
-import { getList } from 'app/actions';
+import { getNameList } from 'app/actions';
 import { NamesForm } from 'components/NamesForm';
 import { ListWithNames } from 'types/types';
 
 export default async function Page() {
-  const list: ListWithNames[] = await getList();
+  const list: ListWithNames[] = await getNameList();
+  console.log('list', list);
   return (
     <>
       <ul>
