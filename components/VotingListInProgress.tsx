@@ -29,15 +29,12 @@ export const VotingListInProgress: React.FC<{
       }
     });
 
-    console.log('newCombinedList', newCombinedList);
     setCombinedList(newCombinedList);
   }, [inProgressList, list]);
 
   useEffect(() => {
     let newListItems: JSX.Element[] = [];
     for (let i = 0; i <= maxPosition; i++) {
-      console.log('i', i);
-
       const items = inProgressList
         .filter((item) => item.position === i)
         .map((item) => {
@@ -49,8 +46,6 @@ export const VotingListInProgress: React.FC<{
         </li>
       );
     }
-
-    console.log('newListItems', newListItems);
 
     setListItems(newListItems);
   }, [combinedList]);
