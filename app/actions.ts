@@ -62,10 +62,17 @@ export async function addNames(
 
   revalidateTag('list');
 
-  return {
-    severity: 'success',
-    message: 'Allt verkar ha gått bra.'
-  };
+  if (namesArray.length == 1) {
+    return {
+      severity: 'success',
+      message: `Namnet ${namesArray[0]} har lagts till.`
+    };
+  } else {
+    return {
+      severity: 'success',
+      message: `Namnen ${namesArray.join(', ')} har lagts till.`
+    };
+  }
 }
 
 export async function removeName(previousState, formData: FormData) {
@@ -138,7 +145,7 @@ export async function addVote(
 
   return {
     severity: 'success',
-    message: 'Allt verkar ha gått bra.'
+    message: 'Rösten registrerades.'
   };
 }
 
