@@ -17,11 +17,12 @@ export async function addNames(
   userSub: string,
   previousState: StatusMessage | null | undefined,
   formData: FormData
-) {
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'FormData var null.'
+      message: 'FormData var null.',
+      timestamp: Date.now()
     };
   }
   let namesString = '';
@@ -33,7 +34,8 @@ export async function addNames(
   if (namesArray.includes('Jobjörn')) {
     return {
       severity: 'error',
-      message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`
+      message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`,
+      timestamp: Date.now()
     };
   }
 
@@ -64,15 +66,20 @@ export async function addNames(
 
   return {
     severity: 'success',
-    message: 'Allt verkar ha gått bra.'
+    message: 'Allt verkar ha gått bra.',
+    timestamp: Date.now()
   };
 }
 
-export async function removeName(previousState, formData: FormData) {
+export async function removeName(
+  previousState,
+  formData: FormData
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'FormData var null.'
+      message: 'FormData var null.',
+      timestamp: Date.now()
     };
   }
 
@@ -84,6 +91,12 @@ export async function removeName(previousState, formData: FormData) {
   });
 
   revalidateTag('list');
+
+  return {
+    severity: 'success',
+    message: 'Allt verkar ha gått bra.',
+    timestamp: Date.now()
+  };
 }
 
 export async function addVote(
@@ -94,7 +107,8 @@ export async function addVote(
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'FormData var null.'
+      message: 'FormData var null.',
+      timestamp: Date.now()
     };
   }
 
@@ -138,7 +152,8 @@ export async function addVote(
 
   return {
     severity: 'success',
-    message: 'Allt verkar ha gått bra.'
+    message: 'Allt verkar ha gått bra.',
+    timestamp: Date.now()
   };
 }
 
