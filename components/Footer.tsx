@@ -45,45 +45,56 @@ export const Footer: React.FC<{}> = () => {
     >
       <Container maxWidth="sm" style={{ display: 'flex' }}>
         <Box sx={{ flexGrow: 1 }}>
-          {user ? (
-            <ul style={{ listStyle: 'none' }}>
-              <li>
-                <Link href="/overview">Översikt</Link>
-              </li>
+          <ul style={{ listStyle: 'none' }}>
+            {user ? (
+              <>
+                <li>
+                  1. <Link href="/overview">Partner</Link>
+                </li>
 
-              <li>
-                <Link href="/names">Namn</Link>
-              </li>
+                <li>
+                  2. <Link href="/names">Namn</Link>
+                </li>
 
-              <li>
-                <Link href="/voting">Rösta</Link>
-              </li>
+                <li>
+                  3. <Link href="/voting">Rösta</Link>
+                </li>
 
-              <li>
-                <Link href="/settings">Inställningar</Link>
-              </li>
-              <li>
-                <Link href="/api/auth/logout">Logga ut</Link>
-              </li>
-            </ul>
-          ) : (
-            <ul style={{ listStyle: 'none' }}>
+                <li>
+                  4. <Link href="/results">Resultat</Link>
+                </li>
+              </>
+            ) : (
               <li>
                 <Link href="/api/auth/login">Logga in</Link>
               </li>
-            </ul>
-          )}
+            )}
+          </ul>
         </Box>
-        <Divider
-          orientation="vertical"
-          sx={{
-            height: 'auto',
-            backgroundColor: colors.mountain.light,
-            margin: '0 10px'
-          }}
-        />
         <Box sx={{ flexGrow: 1 }}>
-          Ett projekt av <Link href="https://www.mejstedt.se">Hedvig</Link> och{' '}
+          <ul style={{ listStyle: 'none' }}>
+            {user && (
+              <>
+                <li>
+                  <Link href="/settings">Inställningar</Link>
+                </li>
+                <li>
+                  <Link href="/api/auth/logout">Logga ut</Link>
+                </li>
+              </>
+            )}
+            <li>
+              <Link href="/about">Om</Link>
+            </li>
+            <li>
+              <Link href="/policy">Integritets- och cookiepolicy</Link>
+            </li>
+          </ul>
+        </Box>
+        <Box sx={{ flexGrow: 1 }}>
+          Ett projekt av
+          <br />
+          <Link href="https://www.mejstedt.se">Hedvig</Link> och{' '}
           <Link href="https://www.jobjorn.se/">Jobjörn</Link> 🔥
         </Box>
       </Container>

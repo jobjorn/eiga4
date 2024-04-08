@@ -42,7 +42,10 @@ export default function RootLayout({
                   flexDirection: 'column'
                 }}
               >
-                <Container maxWidth="sm" sx={{ flexGrow: 1 }}>
+                <Container
+                  maxWidth="sm"
+                  sx={{ flexGrow: 1, marginTop: '2em', marginBottom: '2em' }}
+                >
                   {children}
                 </Container>
                 <Footer />
