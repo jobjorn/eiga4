@@ -66,13 +66,14 @@ model List {
 }
 
 model Vote {
-    id       Int    @id @default(autoincrement())
-    user     User   @relation(fields: [userSub], references: [sub])
-    userSub  String @map("user_sub") // relation scalar field
-    winner   Name   @relation("winner", fields: [winnerId], references: [id])
-    winnerId Int    @map("winner_id") // relation scalar field
-    loser    Name   @relation("loser", fields: [loserId], references: [id])
-    loserId  Int    @map("loser_id") // relation scalar field
+    id        Int      @id @default(autoincrement())
+    user      User     @relation(fields: [userSub], references: [sub])
+    userSub   String   @map("user_sub") // relation scalar field
+    winner    Name     @relation("winner", fields: [winnerId], references: [id])
+    winnerId  Int      @map("winner_id") // relation scalar field
+    loser     Name     @relation("loser", fields: [loserId], references: [id])
+    loserId   Int      @map("loser_id") // relation scalar field
+    timestamp DateTime @default(now())
 
     @@map("votes")
 }
