@@ -96,7 +96,7 @@ export async function addPartnership(
       }
     });
 
-    revalidateTag('partners');
+    revalidateTag('partner');
 
     return {
       severity: 'success',
@@ -129,7 +129,7 @@ export async function addPartnership(
     }
   });
 
-  revalidateTag('partners');
+  revalidateTag('partner');
 
   return {
     severity: 'success',
@@ -170,7 +170,7 @@ export async function cancelPartnership(
       message: 'Något gick fel.'
     };
   } finally {
-    revalidateTag('partners');
+    revalidateTag('partner');
 
     return {
       severity: 'success',
@@ -276,7 +276,7 @@ export async function invitationPartnership(
         message: 'Något gick fel.'
       };
     } finally {
-      revalidateTag('partners');
+      revalidateTag('partner');
 
       return {
         severity: 'success',
@@ -304,7 +304,7 @@ export async function invitationPartnership(
         message: 'Något gick fel.'
       };
     } finally {
-      revalidateTag('partners');
+      revalidateTag('partner');
 
       return {
         severity: 'success',
@@ -359,7 +359,7 @@ export async function severPartnership(
       message: 'Något gick fel.'
     };
   } finally {
-    revalidateTag('partners');
+    revalidateTag('partner');
 
     return {
       severity: 'success',
