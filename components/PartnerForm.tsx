@@ -55,29 +55,40 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
 
   useEffect(() => {
     let newStatusMessage;
-    if (statusMessageAdd) {
-      newStatusMessage = statusMessageAdd;
-    } else if (statusMessageCancel) {
-      newStatusMessage = statusMessageCancel;
-    } else if (statusMessageInvitation) {
-      newStatusMessage = statusMessageInvitation;
-    } else if (statusMessageSever) {
-      newStatusMessage = statusMessageSever;
+
+    const statusMessages = [
+      statusMessageAdd,
+      statusMessageCancel,
+      statusMessageInvitation,
+      statusMessageSever
+    ];
+
+    let latestStatusMessage = null;
+    let latestTimestamp = 0;
+
+    statusMessages.forEach((message) => {
+      if (message && message.timestamp > latestTimestamp) {
+        latestStatusMessage = message;
+        latestTimestamp = message.timestamp;
+      }
+    });
+
+    if (latestStatusMessage) {
+      newStatusMessage = latestStatusMessage;
     }
 
     setStatusMessage(newStatusMessage);
     if (newStatusMessage?.severity !== 'error' && formElement.current) {
-      handleCloseCancelModal();
       formElement.current.reset();
     }
+
+    handleCloseCancelModal();
   }, [
     statusMessageAdd,
     statusMessageCancel,
     statusMessageInvitation,
     statusMessageSever
   ]);
-
-  /* säkerställ att de här verkligen funkar cachingmässigt */
 
   if (user === null) {
     return (
