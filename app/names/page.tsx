@@ -5,7 +5,6 @@ import { ListWithNames } from 'types/types';
 
 export default async function Page() {
   const list: ListWithNames[] = await getNameList();
-  console.log('list', list);
   return (
     <>
       <ul>

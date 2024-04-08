@@ -25,15 +25,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
     }
   );
 
-  /*
-    i andra funktioner har jag byggt så att den inloggades user.sub hämtas
-    direkt i funktionen istället för att skickas med såhär - det är säkrare
-    (pga mindre user input) och man slipper hela den här .bind-grejen, så
-    vi kanske borde ändra på den här också
-  */
-  const addNamesWithId = addNames.bind(null, user?.sub);
-
-  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
+  const [statusMessage, formAction] = useFormState(addNames);
 
   const formElement = useRef<HTMLFormElement>(null);
 

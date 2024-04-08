@@ -14,7 +14,6 @@ const prisma = new PrismaClient({
 /* nedan fem funktioner borde flyttas över till egna actions-filer där de hör hemma */
 
 export async function addNames(
-  userSub: string,
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ) {
@@ -26,6 +25,8 @@ export async function addNames(
   }
   let namesString = '';
   let namesArray: string[] = [];
+  const session = await getSession();
+  const user = session?.user ?? null;
 
   namesString = formData.get('names') as string;
   namesArray = namesString.split(/[\n,]/).map((name) => name.trim());
@@ -36,13 +37,19 @@ export async function addNames(
       message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`
     };
   }
+  if (user === null) {
+    return {
+      severity: 'error',
+      message: `Du är inte inloggad.`
+    };
+  }
 
   namesArray.forEach(async (name) => {
     await prisma.list.create({
       data: {
         user: {
           connect: {
-            sub: userSub
+            sub: user.sub
           }
         },
         name: {
@@ -146,6 +153,7 @@ export const getNameList = unstable_cache(
   async (): Promise<ListWithNames[]> => {
     const session = await getSession();
     const user = session?.user ?? null;
+
     if (!user) {
       return [];
     }
@@ -160,7 +168,7 @@ export const getNameList = unstable_cache(
     });
 
     if (
-      findPartner?.partnering[0].partneredAccepted === false &&
+      findPartner?.partnering[0].partneredAccepted === true &&
       findPartner?.partnering[0].partneredSub !== null
     ) {
       const partnerResult = await prisma.list.findMany({
@@ -193,12 +201,21 @@ export const getNameList = unstable_cache(
         }
       });
 
-      const allNames = [...partnerResult, ...userResult].sort((a, b) => {
-        return a.name.name.localeCompare(b.name.name);
+      const allNames = [...partnerResult, ...userResult];
+      const names = allNames.flatMap((item) => {
+        return [
+          {
+            name: item.name.name,
+            user: item.user.email
+          }
+        ];
       });
-      /* TODO sort the allNames on names */
 
-      return allNames;
+      const allNamesSorted = names.sort((a, b) => {
+        return a.name.localeCompare(b.name, 'sv');
+      });
+
+      return allNamesSorted;
     } else {
       return [];
     }
