@@ -67,6 +67,7 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
 
     setStatusMessage(newStatusMessage);
     if (newStatusMessage?.severity !== 'error' && formElement.current) {
+      handleCloseCancelModal();
       formElement.current.reset();
     }
   }, [
