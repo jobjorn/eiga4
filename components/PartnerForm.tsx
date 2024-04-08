@@ -45,11 +45,9 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
 
   const [cancelModalOpen, setCancelModalOpen] = useState<boolean>(false);
   const handleCloseCancelModal = () => {
-    console.log('close cancel modal!');
     setCancelModalOpen(false);
   };
   const handleOpenCancelModal = () => {
-    console.log('open cancel modal!');
     setCancelModalOpen(true);
   };
 
@@ -218,7 +216,6 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
           <Button
             variant="contained"
             onClick={() => {
-              console.log('knapptryck');
               handleOpenCancelModal();
             }}
           >
