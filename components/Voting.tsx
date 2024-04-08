@@ -161,7 +161,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
           </Box>
         )}
         <VotingListInProgress inProgressList={inProgressList} list={list} />
-        <VotingLog votes={votes} list={list} />
       </>
     );
   }
@@ -170,7 +169,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     return (
       <>
         <VotingListComplete sortedList={sortedList} />
-        <VotingLog votes={votes} list={list} />
       </>
     );
   }
