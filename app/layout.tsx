@@ -1,9 +1,9 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-import { Container, CssBaseline, ThemeProvider } from '@mui/material';
+import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { theme } from 'styles/theme';
 import './global.scss';
-import { Menu } from 'components/Menu';
+import { Footer } from 'components/Footer';
 
 import type { Metadata } from 'next';
 
@@ -34,11 +34,22 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              <Menu />
-
-              <Container maxWidth="sm" sx={{ flexGrow: 1 }}>
-                {children}
-              </Container>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  minHeight: '100svh',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+              >
+                <Container
+                  maxWidth="sm"
+                  sx={{ flexGrow: 1, marginTop: '2em', marginBottom: '2em' }}
+                >
+                  {children}
+                </Container>
+                <Footer />
+              </Box>
             </ThemeProvider>
           </AppRouterCacheProvider>
         </UserProvider>
