@@ -159,7 +159,7 @@ export async function addVote(
 
   return {
     severity: 'success',
-    message: 'Allt verkar ha gått bra.',
+    message: 'Rösten registrerades.',
     timestamp: Date.now()
   };
 }

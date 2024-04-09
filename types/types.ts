@@ -30,3 +30,14 @@ export type UserWithPartners = Prisma.UserGetPayload<{
     };
   };
 }>;
+
+export type InProgressList = {
+  name: string;
+  position: number;
+  id: number;
+};
+
+export type Duel = {
+  left: ListWithNames;
+  right: ListWithNames;
+};
