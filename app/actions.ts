@@ -64,11 +64,19 @@ export async function addNames(
 
   revalidateTag('list');
 
-  return {
-    severity: 'success',
-    message: 'Allt verkar ha gått bra.',
-    timestamp: Date.now()
-  };
+  if (namesArray.length == 1) {
+    return {
+      severity: 'success',
+      message: `Namnet ${namesArray[0]} har lagts till.`,
+      timestamp: Date.now()
+    };
+  } else {
+    return {
+      severity: 'success',
+      message: `Namnen ${namesArray.join(', ')} har lagts till.`,
+      timestamp: Date.now()
+    };
+  }
 }
 
 export async function removeName(
