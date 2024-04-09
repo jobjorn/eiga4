@@ -113,7 +113,6 @@ export async function addVote(
   }
 
   const winner = formData.get('winner') as string;
-  console.log('winner:', winner);
 
   const left = parseInt(formData.get('left') as string, 10);
   const right = parseInt(formData.get('right') as string, 10);
