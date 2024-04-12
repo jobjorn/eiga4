@@ -17,11 +17,12 @@ export async function addNames(
   userSub: string,
   previousState: StatusMessage | null | undefined,
   formData: FormData
-) {
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'FormData var null.'
+      message: 'FormData var null.',
+      timestamp: Date.now()
     };
   }
   let namesString = '';
@@ -33,7 +34,8 @@ export async function addNames(
   if (namesArray.includes('Jobjörn')) {
     return {
       severity: 'error',
-      message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`
+      message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`,
+      timestamp: Date.now()
     };
   }
 
@@ -65,21 +67,27 @@ export async function addNames(
   if (namesArray.length == 1) {
     return {
       severity: 'success',
-      message: `Namnet ${namesArray[0]} har lagts till.`
+      message: `Namnet ${namesArray[0]} har lagts till.`,
+      timestamp: Date.now()
     };
   } else {
     return {
       severity: 'success',
-      message: `Namnen ${namesArray.join(', ')} har lagts till.`
+      message: `Namnen ${namesArray.join(', ')} har lagts till.`,
+      timestamp: Date.now()
     };
   }
 }
 
-export async function removeName(previousState, formData: FormData) {
+export async function removeName(
+  previousState,
+  formData: FormData
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'FormData var null.'
+      message: 'FormData var null.',
+      timestamp: Date.now()
     };
   }
 
@@ -91,6 +99,12 @@ export async function removeName(previousState, formData: FormData) {
   });
 
   revalidateTag('list');
+
+  return {
+    severity: 'success',
+    message: 'Allt verkar ha gått bra.',
+    timestamp: Date.now()
+  };
 }
 
 export async function addVote(
@@ -101,12 +115,12 @@ export async function addVote(
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'FormData var null.'
+      message: 'FormData var null.',
+      timestamp: Date.now()
     };
   }
 
   const winner = formData.get('winner') as string;
-  console.log('winner:', winner);
 
   const left = parseInt(formData.get('left') as string, 10);
   const right = parseInt(formData.get('right') as string, 10);
@@ -145,7 +159,8 @@ export async function addVote(
 
   return {
     severity: 'success',
-    message: 'Rösten registrerades.'
+    message: 'Rösten registrerades.',
+    timestamp: Date.now()
   };
 }
 
