@@ -42,7 +42,8 @@ export async function addNames(
   if (user === null) {
     return {
       severity: 'error',
-      message: `Du är inte inloggad.`
+      message: `Du är inte inloggad.`,
+      timestamp: Date.now()
     };
   }
 
@@ -228,7 +229,9 @@ export const getNameList = unstable_cache(
         return [
           {
             name: item.name.name,
-            user: item.user.email
+            user: item.user.email,
+            id: item.id,
+            avatar: item.user.picture ?? ''
           }
         ];
       });
