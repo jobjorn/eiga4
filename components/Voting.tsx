@@ -1,41 +1,29 @@
 'use client';
 
 import { Vote } from '@prisma/client';
-
-import {
-  Typography,
-  Grid,
-  Card,
-  CardActionArea,
-  CardContent,
-  Box,
-  Alert,
-  CircularProgress
-} from '@mui/material';
+import { Typography, Box, Alert, CircularProgress } from '@mui/material';
 import { useRef, useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { addVote } from 'app/actions';
-import { ListWithNames } from 'types/types';
-
-type Duel = {
-  left: ListWithNames;
-  right: ListWithNames;
-};
+import { Duel, InProgressList, ListWithNames } from 'types/types';
+import { VotingLog } from './VotingLog';
+import { VotingListInProgress } from './VotingListInProgress';
+import { Duels } from './VotingDuels';
+import { VotingListComplete } from './VotingListComplete';
 
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
   votes
 }) => {
-  console.log('votes', votes);
-
   const [duels, setDuels] = useState<Duel[]>([]);
   const [sortedList, setSortedList] = useState<ListWithNames[]>([]);
   const [isFinallyMerged, setIsFinallyMerged] = useState(false);
+  const [inProgressList, setInProgressList] = useState<InProgressList[]>([]);
 
   // Recursive function to perform merge sort on an array of ListWithNames
   const mergeSort = (list: ListWithNames[]): ListWithNames[] => {
-    console.log('initierar en mergeSort', list.length);
+    //   console.log('initierar en mergeSort', list.length);
 
     // Base case: if the array has 1 or 0 elements, it is already sorted
     if (list.length <= 1) {
@@ -58,8 +46,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     left: ListWithNames[],
     right: ListWithNames[]
   ): ListWithNames[] => {
-    console.log('initierar en merge', left.length, right.length);
-
     // Initialize an empty array to store the merged result
     let result: ListWithNames[] = [];
 
@@ -85,11 +71,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
         result.push(right[j]);
         j++;
       } else {
-        console.log(
-          'Här behövs en jämförelse',
-          left[i].name.name,
-          right[j].name.name
-        );
         setDuels((prev) => [
           ...prev,
           {
@@ -116,7 +97,29 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       setIsFinallyMerged(true);
     }
 
-    // Return the merged and sorted array
+    result.map((name, index) => {
+      setInProgressList((prev) => {
+        let previousItem = prev.find((item) => item.name === name.name.name);
+
+        if (previousItem && previousItem.position < index) {
+          const updatedList = prev.filter(
+            (item) => item.name !== name.name.name
+          );
+          return [
+            ...updatedList,
+            { name: name.name.name, position: index, id: name.nameId }
+          ];
+        } else if (!previousItem) {
+          return [
+            ...prev,
+            { name: name.name.name, position: index, id: name.nameId }
+          ];
+        } else {
+          return prev;
+        }
+      });
+    });
+
     return result;
   };
 
@@ -124,12 +127,9 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
     setDuels([]);
 
     const newList = mergeSort(list);
-    console.log('nu kör vi useeffecten som sorterar listan');
 
     setSortedList(newList);
   }, [votes]);
-
-  console.log('duels', duels);
 
   const { user, isLoading } = useUser();
 
@@ -138,17 +138,12 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   const [statusMessage, formAction] = useFormState(addVoteWithId, null);
   const formElement = useRef<HTMLFormElement>(null);
 
-  useEffect(() => {
-    console.log('statusMessage', statusMessage);
-    console.log('formElement', formElement);
-  }, [statusMessage]);
-
-  if (list.length === 0) {
-    return;
-  }
-
   if (isLoading) {
     return <CircularProgress />;
+  }
+
+  if (list.length === 0) {
+    return <Alert severity="error">Inga namn att rösta på!</Alert>;
   }
 
   if (duels.length > 0) {
@@ -156,42 +151,7 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       <>
         <Typography variant="h3">Välj din favorit</Typography>
         <form action={formAction} ref={formElement}>
-          <input type="hidden" name="left" value={duels[0].left.nameId} />
-          <input type="hidden" name="right" value={duels[0].right.nameId} />
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <Card>
-                <CardActionArea name="winner" value="left" type="submit">
-                  <CardContent
-                    sx={{
-                      aspectRatio: '1/1',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    {duels[0].left.name.name}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-            <Grid item xs={6}>
-              <Card>
-                <CardActionArea name="winner" value="right" type="submit">
-                  <CardContent
-                    sx={{
-                      aspectRatio: '1/1',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
-                    }}
-                  >
-                    {duels[0].right.name.name}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          </Grid>
+          <Duels duels={duels} />
         </form>
         {statusMessage && (
           <Box mt={2}>
@@ -200,18 +160,24 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             </Alert>
           </Box>
         )}
+        <VotingListInProgress inProgressList={inProgressList} list={list} />
+        <VotingLog votes={votes} list={list} />
+      </>
+    );
+  }
+
+  if (isFinallyMerged) {
+    return (
+      <>
+        <VotingListComplete sortedList={sortedList} />
+        <VotingLog votes={votes} list={list} />
       </>
     );
   }
 
   return (
     <>
-      <Typography variant="h3">Sorterad lista!</Typography>
-      <ol>
-        {sortedList.map((list) => (
-          <li key={list.nameId}>{list.name.name}</li>
-        ))}
-      </ol>
+      <Alert severity="error">Något verkar ha gått fel.</Alert>
     </>
   );
 };

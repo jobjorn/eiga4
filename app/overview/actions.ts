@@ -46,11 +46,12 @@ export const getUserWithPartners = unstable_cache(
 export async function addPartnership(
   previousState: StatusMessage | null | undefined,
   formData: FormData
-) {
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'Ingen data i formuläret.'
+      message: 'Ingen data i formuläret.',
+      timestamp: Date.now()
     };
   }
 
@@ -59,7 +60,8 @@ export async function addPartnership(
   if (!user) {
     return {
       severity: 'error',
-      message: 'Du verkar ej vara inloggad.'
+      message: 'Du verkar ej vara inloggad.',
+      timestamp: Date.now()
     };
   }
 
@@ -68,7 +70,8 @@ export async function addPartnership(
   if (newPartnerEmail === user.email) {
     return {
       severity: 'error',
-      message: 'Du kan inte vara din egen partner.'
+      message: 'Du kan inte vara din egen partner.',
+      timestamp: Date.now()
     };
   }
 
@@ -96,11 +99,12 @@ export async function addPartnership(
       }
     });
 
-    revalidateTag('partners');
+    revalidateTag('partner');
 
     return {
       severity: 'success',
-      message: `Inbjudan till ${newPartnerEmail} skickad.`
+      message: `Inbjudan till ${newPartnerEmail} skickad.`,
+      timestamp: Date.now()
     };
   }
 
@@ -129,22 +133,24 @@ export async function addPartnership(
     }
   });
 
-  revalidateTag('partners');
+  revalidateTag('partner');
 
   return {
     severity: 'success',
-    message: `Inbjudan till ${newPartnerEmail} skickad.`
+    message: `Inbjudan till ${newPartnerEmail} skickad.`,
+    timestamp: Date.now()
   };
 }
 
 export async function cancelPartnership(
   previousState: StatusMessage | null | undefined,
   formData: FormData
-) {
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'Ingen data i formuläret.'
+      message: 'Ingen data i formuläret.',
+      timestamp: Date.now()
     };
   }
 
@@ -153,7 +159,8 @@ export async function cancelPartnership(
   if (!user) {
     return {
       severity: 'error',
-      message: 'Du verkar ej vara inloggad.'
+      message: 'Du verkar ej vara inloggad.',
+      timestamp: Date.now()
     };
   }
 
@@ -167,14 +174,16 @@ export async function cancelPartnership(
     console.log(e);
     return {
       severity: 'error',
-      message: 'Något gick fel.'
+      message: 'Något gick fel.',
+      timestamp: Date.now()
     };
   } finally {
-    revalidateTag('partners');
+    revalidateTag('partner');
 
     return {
       severity: 'success',
-      message: 'Inbjudan avbröts.'
+      message: 'Inbjudan avbröts.',
+      timestamp: Date.now()
     };
   }
 }
@@ -182,11 +191,12 @@ export async function cancelPartnership(
 export async function invitationPartnership(
   previousState: StatusMessage | null | undefined,
   formData: FormData
-) {
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'Ingen data i formuläret.'
+      message: 'Ingen data i formuläret.',
+      timestamp: Date.now()
     };
   }
 
@@ -195,7 +205,8 @@ export async function invitationPartnership(
   if (!user) {
     return {
       severity: 'error',
-      message: 'Du verkar ej vara inloggad.'
+      message: 'Du verkar ej vara inloggad.',
+      timestamp: Date.now()
     };
   }
 
@@ -211,7 +222,8 @@ export async function invitationPartnership(
     if (invitee === null) {
       return {
         severity: 'error',
-        message: 'Inbjudan hittades ej.'
+        message: 'Inbjudan hittades ej.',
+        timestamp: Date.now()
       };
     }
 
@@ -225,7 +237,8 @@ export async function invitationPartnership(
             connect: {
               sub: user.sub
             }
-          }
+          },
+          partneredAccepted: true
         },
         create: {
           partnering: {
@@ -237,7 +250,8 @@ export async function invitationPartnership(
             connect: {
               sub: user.sub
             }
-          }
+          },
+          partneredAccepted: true
         }
       });
 
@@ -250,7 +264,8 @@ export async function invitationPartnership(
             connect: {
               sub: invitee.partneringSub
             }
-          }
+          },
+          partneredAccepted: true
         },
         create: {
           partnering: {
@@ -262,21 +277,24 @@ export async function invitationPartnership(
             connect: {
               sub: invitee.partneringSub
             }
-          }
+          },
+          partneredAccepted: true
         }
       });
     } catch (e) {
       console.log(e);
       return {
         severity: 'error',
-        message: 'Något gick fel.'
+        message: 'Något gick fel.',
+        timestamp: Date.now()
       };
     } finally {
-      revalidateTag('partners');
+      revalidateTag('partner');
 
       return {
         severity: 'success',
-        message: 'Inbjudan accepterades.'
+        message: 'Inbjudan accepterades.',
+        timestamp: Date.now()
       };
     }
   } else if (denyOrAccept === 'deny') {
@@ -297,20 +315,23 @@ export async function invitationPartnership(
       console.log(e);
       return {
         severity: 'error',
-        message: 'Något gick fel.'
+        message: 'Något gick fel.',
+        timestamp: Date.now()
       };
     } finally {
-      revalidateTag('partners');
+      revalidateTag('partner');
 
       return {
         severity: 'success',
-        message: 'Inbjudan nekades.'
+        message: 'Inbjudan nekades.',
+        timestamp: Date.now()
       };
     }
   } else {
     return {
       severity: 'error',
-      message: 'Något gick fel.'
+      message: 'Något gick fel.',
+      timestamp: Date.now()
     };
   }
 }
@@ -318,11 +339,12 @@ export async function invitationPartnership(
 export async function severPartnership(
   previousState: StatusMessage | null | undefined,
   formData: FormData
-) {
+): Promise<StatusMessage> {
   if (formData === null) {
     return {
       severity: 'error',
-      message: 'Ingen data i formuläret.'
+      message: 'Ingen data i formuläret.',
+      timestamp: Date.now()
     };
   }
 
@@ -331,7 +353,8 @@ export async function severPartnership(
   if (!user) {
     return {
       severity: 'error',
-      message: 'Du verkar ej vara inloggad.'
+      message: 'Du verkar ej vara inloggad.',
+      timestamp: Date.now()
     };
   }
 
@@ -352,14 +375,16 @@ export async function severPartnership(
     console.log(e);
     return {
       severity: 'error',
-      message: 'Något gick fel.'
+      message: 'Något gick fel.',
+      timestamp: Date.now()
     };
   } finally {
-    revalidateTag('partners');
+    revalidateTag('partner');
 
     return {
       severity: 'success',
-      message: 'Partnerskapet avslutades.'
+      message: 'Partnerskapet avslutades.',
+      timestamp: Date.now()
     };
   }
 }

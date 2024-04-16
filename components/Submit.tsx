@@ -2,12 +2,13 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@mui/material';
 import React from 'react';
 
-export const Submit: React.FC<{ children: React.ReactNode; name?; value?; disabled?: boolean; }> = ({
-  children,
-  name,
-  value,
-    disabled
-}) => {
+export const Submit: React.FC<{
+  children: React.ReactNode;
+  name?;
+  value?;
+  disabled?: boolean;
+  color?;
+}> = ({ children, name, value, disabled, color }) => {
   const { pending } = useFormStatus();
 
   return (
@@ -17,6 +18,7 @@ export const Submit: React.FC<{ children: React.ReactNode; name?; value?; disabl
       disabled={pending || disabled}
       name={name}
       value={value}
+      color={color}
     >
       {children}
     </Button>
