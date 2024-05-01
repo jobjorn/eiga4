@@ -1,6 +1,6 @@
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import { theme } from 'styles/theme';
 import './global.scss';
 import { Footer } from 'components/Footer';

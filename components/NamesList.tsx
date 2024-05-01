@@ -1,11 +1,11 @@
 'use client';
-import React, { useRef } from 'react';
 import { Typography } from '@mui/material';
+import React, { useRef } from 'react';
+import { useFormState } from 'react-dom';
 import { removeName } from 'app/actions';
+import { theme } from 'styles/theme';
 import { ListWithNames } from 'types/types';
 import { Submit } from './Submit';
-import { useFormState } from 'react-dom';
-import { theme } from 'styles/theme';
 
 type NamesListProps = {
   list: ListWithNames[];

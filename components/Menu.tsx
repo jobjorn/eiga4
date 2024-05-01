@@ -1,5 +1,9 @@
 'use client';
-import React, { useState } from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { Settings, ViewList } from '@mui/icons-material';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
   Avatar,
@@ -19,14 +23,10 @@ import {
   useTheme
 } from '@mui/material';
 
-import MenuIcon from '@mui/icons-material/Menu';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
 
-import { useUser } from '@auth0/nextjs-auth0/client';
-import Link from 'next/link';
 import { Stack } from '@mui/system';
-import { Settings, ViewList } from '@mui/icons-material';
+import Link from 'next/link';
+import React, { useState } from 'react';
 
 export const Menu: React.FC<{}> = () => {
   const [drawer, setDrawer] = useState(false);

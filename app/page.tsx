@@ -1,6 +1,6 @@
 import { getSession } from '@auth0/nextjs-auth0';
-import { PrismaClient } from '@prisma/client';
 import { Alert, Button, Stack, Typography } from '@mui/material';
+import { PrismaClient } from '@prisma/client';
 import { PartnerBox } from 'components/PartnerBox';
 import { RoundedBox } from './uicomponents/RoundedBox';
 

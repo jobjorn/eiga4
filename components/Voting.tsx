@@ -1,16 +1,16 @@
 'use client';
 
-import { Vote } from '@prisma/client';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import { Typography, Box, Alert, CircularProgress } from '@mui/material';
+import { Vote } from '@prisma/client';
 import { useRef, useEffect, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import { addVote } from 'app/actions';
 import { Duel, InProgressList, ListWithNames } from 'types/types';
-import { VotingLog } from './VotingLog';
-import { VotingListInProgress } from './VotingListInProgress';
 import { Duels } from './VotingDuels';
 import { VotingListComplete } from './VotingListComplete';
+import { VotingListInProgress } from './VotingListInProgress';
+import { VotingLog } from './VotingLog';
 
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,

@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import { colors } from 'app/uicomponents/colors';
 import { useEffect, useState } from 'react';
+import { colors } from 'app/uicomponents/colors';
 import { InProgressList, ListWithNames } from 'types/types';
 
 export const VotingListInProgress: React.FC<{

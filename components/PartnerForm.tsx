@@ -9,19 +9,19 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { Box, Stack } from '@mui/system';
 import { useEffect, useRef, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { Submit } from './Submit';
-import { Box, Stack } from '@mui/system';
 import {
   addPartnership,
   cancelPartnership,
   invitationPartnership,
   severPartnership
 } from 'app/overview/actions';
+import { colors } from 'app/uicomponents/colors';
 import { StatusMessage, UserWithPartners } from 'types/types';
 import { PartnerBox } from './PartnerBox';
-import { colors } from 'app/uicomponents/colors';
+import { Submit } from './Submit';
 
 export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
   user
