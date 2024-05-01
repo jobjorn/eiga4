@@ -1,7 +1,5 @@
 import { Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { colors } from 'app/uicomponents/colors';
-import { InProgressList, ListWithNames } from 'types/types';
+import { ListWithNames } from 'types/types';
 import { NameBlob } from './VotingListInProgress';
 
 export const VotingListComplete: React.FC<{

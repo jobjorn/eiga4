@@ -1,33 +1,9 @@
 'use client';
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { Settings, ViewList } from '@mui/icons-material';
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-import MenuIcon from '@mui/icons-material/Menu';
-import {
-  AppBar,
-  Avatar,
-  Button,
-  Container,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-  useTheme
-} from '@mui/material';
+import { Container } from '@mui/material';
 
-
-import { Box, Stack } from '@mui/system';
+import { Box } from '@mui/system';
 import Link from 'next/link';
-import React, { useState } from 'react';
 import { colors } from 'app/uicomponents/colors';
 
 export const Footer: React.FC<{}> = () => {

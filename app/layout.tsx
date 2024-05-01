@@ -1,9 +1,10 @@
+/* eslint-disable @next/next/no-page-custom-font */
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Box, Container, CssBaseline, ThemeProvider } from '@mui/material';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import { Footer } from 'components/Footer';
 import { theme } from 'styles/theme';
 import './global.scss';
-import { Footer } from 'components/Footer';
 
 import type { Metadata } from 'next';
 

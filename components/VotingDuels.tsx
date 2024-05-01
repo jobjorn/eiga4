@@ -1,6 +1,6 @@
 import { Card, CardActionArea, CardContent, Grid } from '@mui/material';
 import { colors } from 'app/uicomponents/colors';
-import { Duel, ListWithNames } from 'types/types';
+import { Duel } from 'types/types';
 
 export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
   return (

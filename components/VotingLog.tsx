@@ -22,7 +22,7 @@ export const VotingLog: React.FC<{ votes: Vote[]; list: ListWithNames[] }> = ({
     });
 
     setVotingLog(newVotingLog);
-  }, [votes]);
+  }, [list, votes]);
 
   return (
     <>

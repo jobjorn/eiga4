@@ -48,7 +48,7 @@ export const VotingListInProgress: React.FC<{
     }
 
     setListItems(newListItems);
-  }, [combinedList]);
+  }, [combinedList, inProgressList, maxPosition]);
 
   return (
     <>
