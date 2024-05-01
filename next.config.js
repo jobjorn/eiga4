@@ -1,3 +1,8 @@
 module.exports = {
-  swcMinify: true
+  swcMinify: true,
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
+  }
 };
