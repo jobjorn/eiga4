@@ -99,7 +99,7 @@ export async function removeName(
     };
   }
 
-  const id = parseInt(formData.get('id') as string, 10);
+  const id = parseInt(formData.get('remove') as string, 10);
   await prisma.list.delete({
     where: {
       id
@@ -110,7 +110,7 @@ export async function removeName(
 
   return {
     severity: 'success',
-    message: 'Allt verkar ha gått bra.',
+    message: 'Namnet raderades.',
     timestamp: Date.now()
   };
 }
