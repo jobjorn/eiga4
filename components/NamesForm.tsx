@@ -120,7 +120,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
             */
 
             addOptimisticNameList(newNameList);
-            await formAction(formData);
+            await formAction();
           }}
           ref={formElement}
         >
