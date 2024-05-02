@@ -2,8 +2,8 @@
 
 import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient, Vote } from '@prisma/client';
-import { revalidateTag , unstable_cache } from 'next/cache';
-import { StatusMessage , ListWithNames } from '../types/types';
+import { revalidateTag, unstable_cache } from 'next/cache';
+import { StatusMessage, ListWithNames } from '../types/types';
 
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
@@ -78,7 +78,7 @@ export async function addNames(
 }
 
 export async function removeName(
-  previousState,
+  previousState: StatusMessage | null | undefined,
   formData: FormData
 ): Promise<StatusMessage> {
   if (formData === null) {

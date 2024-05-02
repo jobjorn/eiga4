@@ -31,19 +31,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
     (pga mindre user input) och man slipper hela den här .bind-grejen, så
     vi kanske borde ändra på den här också
   */
-  const addNamesWithId = addNames.bind(null, user?.sub);
-
-  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
-
-  const formElement = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (statusMessage?.severity !== 'error' && formElement.current) {
-      formElement.current.reset();
-    }
-  }, [statusMessage]);
-
-  if (isLoading) {
+  if (!user?.sub || isLoading) {
     return (
       <div
         style={{
@@ -57,6 +45,17 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
       </div>
     );
   }
+  const addNamesWithId = addNames.bind(null, user?.sub);
+
+  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
+
+  const formElement = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (statusMessage?.severity !== 'error' && formElement.current) {
+      formElement.current.reset();
+    }
+  }, [statusMessage]);
 
   if (!user || !user.sub) {
     return (
@@ -120,7 +119,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
             */
 
             addOptimisticNameList(newNameList);
-            await formAction();
+            await formAction(formData);
           }}
           ref={formElement}
         >

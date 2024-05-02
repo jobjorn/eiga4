@@ -54,8 +54,6 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
   const formElement = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    let newStatusMessage;
-
     const statusMessages = [
       statusMessageAdd,
       statusMessageCancel,
@@ -63,23 +61,21 @@ export const PartnerForm: React.FC<{ user: UserWithPartners | null }> = ({
       statusMessageSever
     ];
 
-    let latestStatusMessage = null;
+    let latestStatusMessage: StatusMessage[] = [];
     let latestTimestamp = 0;
 
     statusMessages.forEach((message) => {
       if (message && message.timestamp > latestTimestamp) {
-        latestStatusMessage = message;
+        latestStatusMessage[0] = message;
         latestTimestamp = message.timestamp;
       }
     });
 
-    if (latestStatusMessage) {
-      newStatusMessage = latestStatusMessage;
-    }
-
-    setStatusMessage(newStatusMessage);
-    if (newStatusMessage?.severity !== 'error' && formElement.current) {
-      formElement.current.reset();
+    if (latestStatusMessage.length > 0) {
+      setStatusMessage(latestStatusMessage[0]);
+      if (latestStatusMessage[0]?.severity !== 'error' && formElement.current) {
+        formElement.current.reset();
+      }
     }
 
     handleCloseCancelModal();
