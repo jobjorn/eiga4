@@ -4,10 +4,18 @@ import { useFormStatus } from 'react-dom';
 
 export const Submit: React.FC<{
   children: React.ReactNode;
-  name?;
-  value?;
+  name?: string;
+  value?: string;
   disabled?: boolean;
-  color?;
+  color?:
+    | 'inherit'
+    | 'primary'
+    | 'secondary'
+    | 'success'
+    | 'error'
+    | 'info'
+    | 'warning'
+    | undefined;
 }> = ({ children, name, value, disabled, color }) => {
   const { pending } = useFormStatus();
 
