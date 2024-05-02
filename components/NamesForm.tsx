@@ -34,7 +34,17 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
 
   const addNamesWithId = addNames.bind(null, user?.sub ?? '');
 
-  if (!user?.sub || isLoading) {
+  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
+
+  const formElement = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (statusMessage?.severity !== 'error' && formElement.current) {
+      formElement.current.reset();
+    }
+  }, [statusMessage]);
+
+  if (isLoading) {
     return (
       <div
         style={{
@@ -48,16 +58,6 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
       </div>
     );
   }
-
-  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
-
-  const formElement = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    if (statusMessage?.severity !== 'error' && formElement.current) {
-      formElement.current.reset();
-    }
-  }, [statusMessage]);
 
   if (!user || !user.sub) {
     return (
