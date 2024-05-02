@@ -136,7 +136,7 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
 
   const { user, isLoading } = useUser();
 
-  const addVoteWithId = addVote.bind(null, user?.sub);
+  const addVoteWithId = addVote.bind(null, user?.sub ?? '');
 
   const [statusMessage, formAction] = useFormState(addVoteWithId, null);
   const formElement = useRef<HTMLFormElement>(null);
