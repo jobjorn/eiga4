@@ -4,15 +4,15 @@ export const PageTitle: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
   return (
-    <h3
+    <h1
       style={{
         borderBottom: '1rem solid',
-        padding: '1rem 0',
+        paddingBottom: '1rem',
         marginBottom: '1rem',
         borderColor: colors.primary.main
       }}
     >
       {children}
-    </h3>
+    </h1>
   );
 };
