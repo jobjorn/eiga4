@@ -25,15 +25,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
     }
   );
 
-  /*
-    i andra funktioner har jag byggt så att den inloggades user.sub hämtas
-    direkt i funktionen istället för att skickas med såhär - det är säkrare
-    (pga mindre user input) och man slipper hela den här .bind-grejen, så
-    vi kanske borde ändra på den här också
-  */
-  const addNamesWithId = addNames.bind(null, user?.sub);
-
-  const [statusMessage, formAction] = useFormState(addNamesWithId, null);
+  const [statusMessage, formAction] = useFormState(addNames);
 
   const formElement = useRef<HTMLFormElement>(null);
 
@@ -77,6 +69,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
 
   return (
     <>
+      <NamesList list={optimisticNameList} user={user} />
       <div
         style={{
           display: 'flex',
@@ -101,16 +94,9 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
 
             const newNameList = namesArray.map((name, index) => {
               return {
-                name: {
-                  id: -index,
-                  name: name,
-                  description: null
-                },
+                name: name,
                 id: -index,
-                userSub: user.sub || '',
-                nameId: -index,
-                subarray: null,
-                position: 0
+                user: user.sub || ''
               };
             });
             /*
@@ -136,7 +122,6 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
           </Stack>
         </form>
       </div>
-      <NamesList list={optimisticNameList} />
     </>
   );
 };

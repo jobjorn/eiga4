@@ -1,33 +1,31 @@
 'use client';
 import React, { useRef } from 'react';
-import { Typography } from '@mui/material';
+import { Alert, Avatar, Box, Typography } from '@mui/material';
 import { removeName } from 'app/actions';
 import { ListWithNames } from 'types/types';
 import { Submit } from './Submit';
 import { useFormState } from 'react-dom';
 import { theme } from 'styles/theme';
+import { AiOutlineClose } from 'react-icons/ai';
 
 type NamesListProps = {
   list: ListWithNames[];
+  user: any;
 };
 export const NamesList = (props: NamesListProps) => {
   const formElement = useRef<HTMLFormElement>(null);
   const [statusMessage, formAction] = useFormState(removeName, null);
 
-  /*
-  förslag: använd 1 form för hela listan och skicka med id:t
-  i submit-knappen istället för som hidden input (submit name="remove" value={id})
-  
-  förslag2: nu syns in statusMessage någonstans - visa eller ta bort?
-
-  förslag3: göra en liten komponent för namnen? då skulle man kunna slippa att ha
-  dubbla returns, jag tycker att det är lite förvirrande
-*/
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-      {props.list.map((item) => {
-        return (
+    <form action={formAction} ref={formElement}>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))',
+          gap: '5px'
+        }}
+      >
+        {props.list.map((item) => (
           <div
             key={item.id}
             style={{
@@ -39,14 +37,29 @@ export const NamesList = (props: NamesListProps) => {
               padding: '5px'
             }}
           >
-            <Typography variant="body1">{item.name.name}</Typography>
-            <form action={formAction} ref={formElement}>
-              <input type="hidden" name="id" value={item.id} />
-              <Submit>Remove</Submit>
-            </form>
+            <div style={{ display: 'flex', gap: '5px' }}>
+              {item.avatar !== undefined && (
+                <Avatar
+                  alt={item.user}
+                  sx={{ bgcolor: theme.palette.primary.main }}
+                  src={item.avatar}
+                />
+              )}
+              <Typography variant="body1">{item.name}</Typography>
+            </div>
+            <Submit variant="text" name="remove" value={item.id}>
+              <AiOutlineClose />
+            </Submit>
           </div>
-        );
-      })}
-    </div>
+        ))}
+        {statusMessage && (
+          <Box mt={2}>
+            <Alert severity={statusMessage.severity}>
+              {statusMessage.message}
+            </Alert>
+          </Box>
+        )}
+      </div>
+    </form>
   );
 };

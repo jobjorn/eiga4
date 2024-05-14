@@ -22,6 +22,16 @@ export const theme = createTheme({
           borderRadius: 20
         }
       }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          padding: '0 5px ',
+          margin: '0px',
+          width: 'fit-content',
+          minWidth: '15px'
+        }
+      }
     }
   }
 });
