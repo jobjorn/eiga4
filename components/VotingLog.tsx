@@ -12,13 +12,13 @@ export const VotingLog: React.FC<{ votes: Vote[]; list: ListWithNames[] }> = ({
   useEffect(() => {
     let newVotingLog: string[] = [];
     votes.map((vote) => {
-      const winner = list.find((item) => item.nameId === vote.winnerId) || {
+      const winner = list.find((item) => item.id === vote.winnerId) || {
         name: { name: '???' }
       };
-      const loser = list.find((item) => item.nameId === vote.loserId) || {
+      const loser = list.find((item) => item.id === vote.loserId) || {
         name: { name: '???' }
       };
-      newVotingLog.push(`${winner.name.name} > ${loser.name.name}`);
+      newVotingLog.push(`${winner.name} > ${loser.name}`);
     });
 
     setVotingLog(newVotingLog);
