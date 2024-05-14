@@ -25,7 +25,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
     }
   );
 
-  const [statusMessage, formAction] = useFormState(addNames);
+  const [statusMessage, formAction] = useFormState(addNames, null);
 
   const formElement = useRef<HTMLFormElement>(null);
 
