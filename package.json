@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3500",
     "build": "next build",
+    "vercel-build": "prisma generate && prisma db push && next build",
     "start": "next start",
     "what": "ECHO Package system: npm",
     "test": "jest",
