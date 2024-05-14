@@ -5,7 +5,7 @@ import { useFormStatus } from 'react-dom';
 export const Submit: React.FC<{
   children: React.ReactNode;
   name?: string;
-  value?: string;
+  value?: string | number;
   disabled?: boolean;
   color?:
     | 'inherit'
@@ -16,17 +16,18 @@ export const Submit: React.FC<{
     | 'info'
     | 'warning'
     | undefined;
-}> = ({ children, name, value, disabled, color }) => {
+  variant?: 'text' | 'outlined' | 'contained';
+}> = ({ children, name, value, disabled, color, variant = 'contained' }) => {
   const { pending } = useFormStatus();
 
   return (
     <Button
-      variant="contained"
       type="submit"
       disabled={pending || disabled}
       name={name}
       value={value}
       color={color}
+      variant={variant}
     >
       {children}
     </Button>

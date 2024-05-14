@@ -6,13 +6,12 @@ import { revalidateTag, unstable_cache } from 'next/cache';
 import { StatusMessage, ListWithNames } from '../types/types';
 
 const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error']
+  log: ['warn', 'error']
 });
 
 /* nedan fem funktioner borde flyttas över till egna actions-filer där de hör hemma */
 
 export async function addNames(
-  userSub: string,
   previousState: StatusMessage | null | undefined,
   formData: FormData
 ): Promise<StatusMessage> {
@@ -25,6 +24,8 @@ export async function addNames(
   }
   let namesString = '';
   let namesArray: string[] = [];
+  const session = await getSession();
+  const user = session?.user ?? null;
 
   namesString = formData.get('names') as string;
   namesArray = namesString.split(/[\n,]/).map((name) => name.trim());
@@ -36,13 +37,20 @@ export async function addNames(
       timestamp: Date.now()
     };
   }
+  if (user === null) {
+    return {
+      severity: 'error',
+      message: `Du är inte inloggad.`,
+      timestamp: Date.now()
+    };
+  }
 
   namesArray.forEach(async (name) => {
     await prisma.list.create({
       data: {
         user: {
           connect: {
-            sub: userSub
+            sub: user.sub
           }
         },
         name: {
@@ -89,7 +97,7 @@ export async function removeName(
     };
   }
 
-  const id = parseInt(formData.get('id') as string, 10);
+  const id = parseInt(formData.get('remove') as string, 10);
   await prisma.list.delete({
     where: {
       id
@@ -100,7 +108,7 @@ export async function removeName(
 
   return {
     severity: 'success',
-    message: 'Allt verkar ha gått bra.',
+    message: 'Namnet raderades.',
     timestamp: Date.now()
   };
 }
@@ -162,32 +170,77 @@ export async function addVote(
   };
 }
 
-export const getList = unstable_cache(
+export const getNameList = unstable_cache(
   async (): Promise<ListWithNames[]> => {
     const session = await getSession();
     const user = session?.user ?? null;
+
     if (!user) {
       return [];
     }
 
-    const result = await prisma.list.findMany({
+    const findPartner = await prisma.user.findUnique({
       where: {
-        userSub: user.sub
+        sub: user.sub
       },
       include: {
-        name: true
-      },
-      orderBy: {
-        name: {
-          name: 'asc'
-        }
+        partnering: true
       }
     });
 
-    if (result.length === 0) {
-      return [];
+    if (
+      findPartner?.partnering[0].partneredAccepted === true &&
+      findPartner?.partnering[0].partneredSub !== null
+    ) {
+      const partnerResult = await prisma.list.findMany({
+        where: {
+          userSub: findPartner.partnering[0].partneredSub
+        },
+        include: {
+          name: true,
+          user: true
+        },
+        orderBy: {
+          name: {
+            name: 'asc'
+          }
+        }
+      });
+
+      const userResult = await prisma.list.findMany({
+        where: {
+          userSub: user.sub
+        },
+        include: {
+          name: true,
+          user: true
+        },
+        orderBy: {
+          name: {
+            name: 'asc'
+          }
+        }
+      });
+
+      const allNames = [...partnerResult, ...userResult];
+      const names = allNames.flatMap((item) => {
+        return [
+          {
+            name: item.name.name,
+            user: item.user.email,
+            id: item.id,
+            avatar: item.user.picture ?? ''
+          }
+        ];
+      });
+
+      const allNamesSorted = names.sort((a, b) => {
+        return a.name.localeCompare(b.name, 'sv');
+      });
+
+      return allNamesSorted;
     } else {
-      return result;
+      return [];
     }
   },
   ['list'],

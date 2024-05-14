@@ -8,11 +8,12 @@ export interface StatusMessage {
   timestamp: number;
 }
 
-export type ListWithNames = Prisma.ListGetPayload<{
-  include: {
-    name: true;
-  };
-}>;
+export type ListWithNames = {
+  name: string;
+  user: string;
+  id: number;
+  avatar?: string;
+};
 
 export type UserWithPartners = Prisma.UserGetPayload<{
   include: {
