@@ -1,5 +1,6 @@
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { Box, Button, Typography } from '@mui/material';
+import Link from 'next/link';
 import { PageTitle } from 'app/uicomponents/PageTitle';
 import { PartnerForm } from 'components/PartnerForm';
 import { getUserWithPartners } from './actions';
@@ -19,6 +20,7 @@ export default async function Page() {
         <PartnerForm user={userWithPartners} />
       </Box>
       <Button
+        LinkComponent={Link}
         style={{ alignSelf: 'flex-end' }}
         href="/names"
         size="large"
