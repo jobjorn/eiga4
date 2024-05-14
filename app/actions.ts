@@ -2,7 +2,7 @@
 
 import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient, Vote } from '@prisma/client';
-import { revalidateTag, unstable_cache } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { StatusMessage, ListWithNames } from '../types/types';
 
 const prisma = new PrismaClient({
@@ -169,104 +169,95 @@ export async function addVote(
     timestamp: Date.now()
   };
 }
+export async function getNameList(): Promise<ListWithNames[]> {
+  const session = await getSession();
+  const user = session?.user ?? null;
 
-export const getNameList = unstable_cache(
-  async (): Promise<ListWithNames[]> => {
-    const session = await getSession();
-    const user = session?.user ?? null;
+  if (!user) {
+    return [];
+  }
 
-    if (!user) {
-      return [];
+  const findPartner = await prisma.user.findUnique({
+    where: {
+      sub: user.sub
+    },
+    include: {
+      partnering: true
     }
+  });
 
-    const findPartner = await prisma.user.findUnique({
+  if (
+    findPartner?.partnering[0].partneredAccepted === true &&
+    findPartner?.partnering[0].partneredSub !== null
+  ) {
+    const partnerResult = await prisma.list.findMany({
       where: {
-        sub: user.sub
+        userSub: findPartner.partnering[0].partneredSub
       },
       include: {
-        partnering: true
+        name: true,
+        user: true
+      },
+      orderBy: {
+        name: {
+          name: 'asc'
+        }
       }
     });
 
-    if (
-      findPartner?.partnering[0].partneredAccepted === true &&
-      findPartner?.partnering[0].partneredSub !== null
-    ) {
-      const partnerResult = await prisma.list.findMany({
-        where: {
-          userSub: findPartner.partnering[0].partneredSub
-        },
-        include: {
-          name: true,
-          user: true
-        },
-        orderBy: {
-          name: {
-            name: 'asc'
-          }
-        }
-      });
-
-      const userResult = await prisma.list.findMany({
-        where: {
-          userSub: user.sub
-        },
-        include: {
-          name: true,
-          user: true
-        },
-        orderBy: {
-          name: {
-            name: 'asc'
-          }
-        }
-      });
-
-      const allNames = [...partnerResult, ...userResult];
-      const names = allNames.flatMap((item) => {
-        return [
-          {
-            name: item.name.name,
-            user: item.user.email,
-            id: item.id,
-            avatar: item.user.picture ?? ''
-          }
-        ];
-      });
-
-      const allNamesSorted = names.sort((a, b) => {
-        return a.name.localeCompare(b.name, 'sv');
-      });
-
-      return allNamesSorted;
-    } else {
-      return [];
-    }
-  },
-  ['list'],
-  { tags: ['list'] }
-);
-
-export const getVotes = unstable_cache(
-  async (): Promise<Vote[]> => {
-    const session = await getSession();
-    const user = session?.user ?? null;
-    if (!user) {
-      return [];
-    }
-
-    const result = await prisma.vote.findMany({
+    const userResult = await prisma.list.findMany({
       where: {
         userSub: user.sub
+      },
+      include: {
+        name: true,
+        user: true
+      },
+      orderBy: {
+        name: {
+          name: 'asc'
+        }
       }
     });
 
-    if (result.length === 0) {
-      return [];
-    } else {
-      return result;
+    const allNames = [...partnerResult, ...userResult];
+    const names = allNames.flatMap((item) => {
+      return [
+        {
+          name: item.name.name,
+          user: item.user.email,
+          id: item.id,
+          avatar: item.user.picture ?? ''
+        }
+      ];
+    });
+
+    const allNamesSorted = names.sort((a, b) => {
+      return a.name.localeCompare(b.name, 'sv');
+    });
+
+    return allNamesSorted;
+  } else {
+    return [];
+  }
+}
+
+export async function getVotes(): Promise<Vote[]> {
+  const session = await getSession();
+  const user = session?.user ?? null;
+  if (!user) {
+    return [];
+  }
+
+  const result = await prisma.vote.findMany({
+    where: {
+      userSub: user.sub
     }
-  },
-  ['votes'],
-  { tags: ['votes'] }
-);
+  });
+
+  if (result.length === 0) {
+    return [];
+  } else {
+    return result;
+  }
+}
