@@ -34,12 +34,10 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       // Compare the elements of the left and right arrays and merge them in sorted order
       while (i < left.length && j < right.length) {
         const isLeftWinner = votes.find(
-          (vote) =>
-            vote.winnerId === left[i].nameId && vote.loserId === right[j].nameId
+          (vote) => vote.winnerId === left[i].id && vote.loserId === right[j].id
         );
         const isRightWinner = votes.find(
-          (vote) =>
-            vote.winnerId === right[j].nameId && vote.loserId === left[i].nameId
+          (vote) => vote.winnerId === right[j].id && vote.loserId === left[i].id
         );
         // Compare the number of votes for the current lists and push the list with more votes to the result array
         if (isLeftWinner) {
@@ -77,21 +75,16 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
 
       result.map((name, index) => {
         setInProgressList((prev) => {
-          let previousItem = prev.find((item) => item.name === name.name.name);
+          let previousItem = prev.find((item) => item.name === name.name);
 
           if (previousItem && previousItem.position < index) {
-            const updatedList = prev.filter(
-              (item) => item.name !== name.name.name
-            );
+            const updatedList = prev.filter((item) => item.name !== name.name);
             return [
               ...updatedList,
-              { name: name.name.name, position: index, id: name.nameId }
+              { name: name.name, position: index, id: name.id }
             ];
           } else if (!previousItem) {
-            return [
-              ...prev,
-              { name: name.name.name, position: index, id: name.nameId }
-            ];
+            return [...prev, { name: name.name, position: index, id: name.id }];
           } else {
             return prev;
           }

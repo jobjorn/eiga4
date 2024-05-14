@@ -5,8 +5,8 @@ import { Duel } from 'types/types';
 export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
   return (
     <>
-      <input type="hidden" name="left" value={duels[0].left.nameId} />
-      <input type="hidden" name="right" value={duels[0].right.nameId} />
+      <input type="hidden" name="left" value={duels[0].left.id} />
+      <input type="hidden" name="right" value={duels[0].right.id} />
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Card style={{ borderRadius: '30px' }}>
@@ -21,7 +21,7 @@ export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
                   fontSize: '2em'
                 }}
               >
-                {duels[0].left.name.name}
+                {duels[0].left.name}
               </CardContent>
             </CardActionArea>
           </Card>
@@ -39,7 +39,7 @@ export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
                   fontSize: '2em'
                 }}
               >
-                {duels[0].right.name.name}
+                {duels[0].right.name}
               </CardContent>
             </CardActionArea>
           </Card>
