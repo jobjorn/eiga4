@@ -1,4 +1,4 @@
-import { Stack, useTheme } from '@mui/system';
+import { Stack } from '@mui/system';
 
 export const PartnerBox: React.FC<{ children: React.ReactNode }> = ({
   children

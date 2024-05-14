@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
-import { colors } from 'app/uicomponents/colors';
 import { useEffect, useState } from 'react';
+import { colors } from 'app/uicomponents/colors';
 import { InProgressList, ListWithNames } from 'types/types';
 
 export const VotingListInProgress: React.FC<{
@@ -18,13 +18,13 @@ export const VotingListInProgress: React.FC<{
     list.map((item) => {
       if (
         !inProgressList.some(
-          (inProgressItem) => inProgressItem.name === item.name.name
+          (inProgressItem) => inProgressItem.name === item.name
         )
       ) {
         newCombinedList.push({
-          name: item.name.name,
+          name: item.name,
           position: 0,
-          id: item.nameId
+          id: item.id
         });
       }
     });
@@ -48,7 +48,7 @@ export const VotingListInProgress: React.FC<{
     }
 
     setListItems(newListItems);
-  }, [combinedList]);
+  }, [combinedList, inProgressList, maxPosition]);
 
   return (
     <>

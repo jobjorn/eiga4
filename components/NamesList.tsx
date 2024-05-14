@@ -1,12 +1,12 @@
 'use client';
-import React, { useRef } from 'react';
 import { Alert, Avatar, Box, Typography } from '@mui/material';
+import React, { useRef } from 'react';
+import { useFormState } from 'react-dom';
+import { AiOutlineClose } from 'react-icons/ai';
 import { removeName } from 'app/actions';
+import { theme } from 'styles/theme';
 import { ListWithNames } from 'types/types';
 import { Submit } from './Submit';
-import { useFormState } from 'react-dom';
-import { theme } from 'styles/theme';
-import { AiOutlineClose } from 'react-icons/ai';
 
 type NamesListProps = {
   list: ListWithNames[];
@@ -14,6 +14,7 @@ type NamesListProps = {
 };
 export const NamesList = (props: NamesListProps) => {
   const formElement = useRef<HTMLFormElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [statusMessage, formAction] = useFormState(removeName, null);
 
   return (

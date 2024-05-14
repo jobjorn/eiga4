@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useEffect, useOptimistic, useState } from 'react';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import {
   Alert,
   Box,
@@ -8,12 +8,12 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { addNames } from 'app/actions';
+import React, { useRef, useEffect, useOptimistic, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import { Submit } from './Submit';
+import { addNames } from 'app/actions';
 import { ListWithNames } from 'types/types';
 import { NamesList } from './NamesList';
+import { Submit } from './Submit';
 
 export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
   const { user, isLoading } = useUser();
@@ -25,7 +25,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
     }
   );
 
-  const [statusMessage, formAction] = useFormState(addNames);
+  const [statusMessage, formAction] = useFormState(addNames, null);
 
   const formElement = useRef<HTMLFormElement>(null);
 

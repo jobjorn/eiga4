@@ -1,47 +1,43 @@
 'use server';
 
-import { PrismaClient, Vote } from '@prisma/client';
 import { getSession } from '@auth0/nextjs-auth0';
-import { revalidateTag, unstable_cache } from 'next/cache';
+import { PrismaClient } from '@prisma/client';
+import { revalidateTag } from 'next/cache';
 import { StatusMessage, UserWithPartners } from 'types/types';
 
 const prisma = new PrismaClient({
   log: ['query', 'info', 'warn', 'error']
 });
 
-export const getUserWithPartners = unstable_cache(
-  async (): Promise<UserWithPartners | null> => {
-    const session = await getSession();
-    const user = session?.user ?? null;
-    if (!user) {
-      return null;
-    }
+export async function getUserWithPartners(): Promise<UserWithPartners | null> {
+  const session = await getSession();
+  const user = session?.user ?? null;
+  if (!user) {
+    return null;
+  }
 
-    const result = await prisma.user.findUnique({
-      where: {
-        sub: user.sub
+  const result = await prisma.user.findUnique({
+    where: {
+      sub: user.sub
+    },
+    include: {
+      partnered: {
+        include: {
+          partnering: true,
+          partnered: true
+        }
       },
-      include: {
-        partnered: {
-          include: {
-            partnering: true,
-            partnered: true
-          }
-        },
-        partnering: {
-          include: {
-            partnering: true,
-            partnered: true
-          }
+      partnering: {
+        include: {
+          partnering: true,
+          partnered: true
         }
       }
-    });
+    }
+  });
 
-    return result;
-  },
-  ['partner'],
-  { tags: ['partner'] }
-);
+  return result;
+}
 
 export async function addPartnership(
   previousState: StatusMessage | null | undefined,

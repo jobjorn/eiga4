@@ -1,7 +1,5 @@
 import { Typography } from '@mui/material';
-import { colors } from 'app/uicomponents/colors';
-import { useEffect, useState } from 'react';
-import { InProgressList, ListWithNames } from 'types/types';
+import { ListWithNames } from 'types/types';
 import { NameBlob } from './VotingListInProgress';
 
 export const VotingListComplete: React.FC<{
@@ -12,8 +10,8 @@ export const VotingListComplete: React.FC<{
       <Typography variant="h3">Röstningen är slutförd</Typography>
       <ol>
         {sortedList.map((list) => (
-          <li key={list.nameId} style={{ margin: '15px 0' }}>
-            <NameBlob name={list.name.name} />
+          <li key={list.id} style={{ margin: '15px 0' }}>
+            <NameBlob name={list.name} />
           </li>
         ))}
       </ol>
