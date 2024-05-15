@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-    id         Int           @id @default(autoincrement())
-    sub        String        @unique
-    name       String
-    email      String        @unique
-    picture    String?
-    role       Role          @default(USER)
-    lists      List[]
-    partnering Partnership[] @relation("partnering")
-    partnered  Partnership[] @relation("partnered")
-    Vote       Vote[]
+    id          Int           @id @default(autoincrement())
+    sub         String        @unique
+    name        String
+    email       String        @unique
+    picture     String?
+    role        Role          @default(USER)
+    lists       List[]
+    partnering  Partnership[] @relation("partnering")
+    partnered   Partnership[] @relation("partnered")
+    Vote        Vote[]
+    readyToVote Boolean       @default(false)
 
     @@map("users")
 }
