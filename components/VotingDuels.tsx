@@ -5,8 +5,8 @@ import { Duel } from 'types/types';
 export const Duels: React.FC<{ duels: Duel[] }> = ({ duels }) => {
   return (
     <>
-      <input type="hidden" name="left" value={duels[0].left.id} />
-      <input type="hidden" name="right" value={duels[0].right.id} />
+      <input type="hidden" name="left" value={duels[0].left.nameId} />
+      <input type="hidden" name="right" value={duels[0].right.nameId} />
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Card style={{ borderRadius: '30px' }}>

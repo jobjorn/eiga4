@@ -1,3 +1,5 @@
+'use client';
+
 import { Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { colors } from 'app/uicomponents/colors';

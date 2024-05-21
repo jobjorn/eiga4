@@ -227,6 +227,7 @@ export async function getNameList(): Promise<ListWithNames[]> {
           name: item.name.name,
           user: item.user.email,
           id: item.id,
+          nameId: item.name.id,
           avatar: item.user.picture ?? ''
         }
       ];

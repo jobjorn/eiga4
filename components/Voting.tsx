@@ -1,23 +1,29 @@
 'use client';
 
 import { useUser } from '@auth0/nextjs-auth0/client';
-import { Typography, Box, Alert, CircularProgress } from '@mui/material';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+
+import {
+  Typography,
+  Box,
+  Alert,
+  CircularProgress,
+  Button
+} from '@mui/material';
 import { Vote } from '@prisma/client';
+import Link from 'next/link';
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useFormState } from 'react-dom';
 import { addVote } from 'app/actions';
 import { Duel, InProgressList, ListWithNames } from 'types/types';
 import { Duels } from './VotingDuels';
-import { VotingListComplete } from './VotingListComplete';
 import { VotingListInProgress } from './VotingListInProgress';
-import { VotingLog } from './VotingLog';
 
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
   votes
 }) => {
   const [duels, setDuels] = useState<Duel[]>([]);
-  const [sortedList, setSortedList] = useState<ListWithNames[]>([]);
   const [isFinallyMerged, setIsFinallyMerged] = useState(false);
   const [inProgressList, setInProgressList] = useState<InProgressList[]>([]);
 
@@ -34,10 +40,12 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       // Compare the elements of the left and right arrays and merge them in sorted order
       while (i < left.length && j < right.length) {
         const isLeftWinner = votes.find(
-          (vote) => vote.winnerId === left[i].id && vote.loserId === right[j].id
+          (vote) =>
+            vote.winnerId === left[i].nameId && vote.loserId === right[j].nameId
         );
         const isRightWinner = votes.find(
-          (vote) => vote.winnerId === right[j].id && vote.loserId === left[i].id
+          (vote) =>
+            vote.winnerId === right[j].nameId && vote.loserId === left[i].nameId
         );
         // Compare the number of votes for the current lists and push the list with more votes to the result array
         if (isLeftWinner) {
@@ -81,10 +89,13 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             const updatedList = prev.filter((item) => item.name !== name.name);
             return [
               ...updatedList,
-              { name: name.name, position: index, id: name.id }
+              { name: name.name, position: index, id: name.nameId }
             ];
           } else if (!previousItem) {
-            return [...prev, { name: name.name, position: index, id: name.id }];
+            return [
+              ...prev,
+              { name: name.name, position: index, id: name.nameId }
+            ];
           } else {
             return prev;
           }
@@ -122,9 +133,7 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   useEffect(() => {
     setDuels([]);
 
-    const newList = mergeSort(list);
-
-    setSortedList(newList);
+    mergeSort(list);
   }, [votes, list, mergeSort]);
 
   const { user, isLoading } = useUser();
@@ -145,7 +154,10 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   if (duels.length > 0) {
     return (
       <>
-        <Typography variant="h3">Välj din favorit</Typography>
+        <Typography variant="body1" style={{ marginBottom: '1rem' }}>
+          Det tredje steget är att rangordna de namn ni valt genom en
+          omröstning. Klicka på den du föredrar i varje par.
+        </Typography>
         <form action={formAction} ref={formElement}>
           <Duels duels={duels} />
         </form>
@@ -157,7 +169,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
           </Box>
         )}
         <VotingListInProgress inProgressList={inProgressList} list={list} />
-        <VotingLog votes={votes} list={list} />
       </>
     );
   }
@@ -165,8 +176,21 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   if (isFinallyMerged) {
     return (
       <>
-        <VotingListComplete sortedList={sortedList} />
-        <VotingLog votes={votes} list={list} />
+        <Box style={{ flexGrow: 1 }}>
+          <Typography variant="body1">Listan är färdigsorterad.</Typography>
+        </Box>
+
+        <Button
+          LinkComponent={Link}
+          style={{ alignSelf: 'flex-end' }}
+          href="/results"
+          size="large"
+          variant="text"
+          color="secondary"
+          endIcon={<ArrowForwardIosIcon />}
+        >
+          Se resultatet
+        </Button>
       </>
     );
   }

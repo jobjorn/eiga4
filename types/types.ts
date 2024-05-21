@@ -12,6 +12,7 @@ export type ListWithNames = {
   name: string;
   user: string;
   id: number;
+  nameId: number;
   avatar?: string;
 };
 
