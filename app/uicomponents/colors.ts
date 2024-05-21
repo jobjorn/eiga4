@@ -4,8 +4,9 @@ export const colors = {
     light: '#FBEED5'
   },
   secondary: {
-    main: '#78BDB2',
-    light: '#DAEDEA'
+    main: '#152b38',
+    light: '#BFC5C9',
+    contrast: '#eeeeee'
   },
   error: {
     main: '#d32f2f',

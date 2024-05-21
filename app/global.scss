@@ -64,3 +64,23 @@ a {
 footer a {
   text-decoration: underline;
 }
+
+h3, .MuiTypography-h3 {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 3rem;
+  line-height: 1.167;
+  letter-spacing: 0em;
+}
+
+
+h1, .MuiTypography-h1 {
+  font-family: "EB Garamond", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 5rem;
+  line-height: 1.167;
+}

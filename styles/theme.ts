@@ -10,9 +10,9 @@ export const theme = createTheme({
       contrastText: '#000'
     },
     secondary: {
-      light: '#DAEDEA',
-      main: '#78BDB2',
-      contrastText: '#000'
+      main: '#152b38',
+      light: '#BFC5C9',
+      contrastText: '#eeeeee'
     }
   },
   components: {
@@ -32,6 +32,11 @@ export const theme = createTheme({
           minWidth: '15px'
         }
       }
+    }
+  },
+  typography: {
+    h3: {
+      fontFamily: ['EB Garamond', 'serif'].join(',')
     }
   }
 });
