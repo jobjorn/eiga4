@@ -1,6 +1,7 @@
-import { getNameList, getVotes } from 'app/actions';
+import { getNameList } from 'app/actions';
 import { PageTitle } from 'app/uicomponents/PageTitle';
 import { Voting } from 'components/Voting';
+import { getVotes } from './actions';
 
 export default async function Page() {
   const list = await getNameList();

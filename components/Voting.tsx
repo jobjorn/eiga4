@@ -14,7 +14,7 @@ import { Vote } from '@prisma/client';
 import Link from 'next/link';
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useFormState } from 'react-dom';
-import { addVote } from 'app/actions';
+import { addVote } from 'app/voting/actions';
 import { Duel, InProgressList, ListWithNames } from 'types/types';
 import { Duels } from './VotingDuels';
 import { VotingListInProgress } from './VotingListInProgress';

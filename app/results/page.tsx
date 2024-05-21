@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
-import { getNameList, getVotes } from 'app/actions';
+import { getNameList } from 'app/actions';
 import { PageTitle } from 'app/uicomponents/PageTitle';
+import { getVotes } from 'app/voting/actions';
 import { VotingListComplete } from 'components/VotingListComplete';
 
 export default async function Page() {
