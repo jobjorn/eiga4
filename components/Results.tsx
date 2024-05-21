@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ListWithNames } from 'types/types';
 import { NameBlob } from './VotingListInProgress';
 
-export const VotingListComplete: React.FC<{
+export const Results: React.FC<{
   list: ListWithNames[];
   votes: Vote[];
 }> = ({ list, votes }) => {

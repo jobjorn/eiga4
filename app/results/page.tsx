@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import { getNameList } from 'app/actions';
 import { PageTitle } from 'app/uicomponents/PageTitle';
 import { getVotes } from 'app/voting/actions';
-import { VotingListComplete } from 'components/VotingListComplete';
+import { Results } from 'components/Results';
 
 export default async function Page() {
   const list = await getNameList();
@@ -15,7 +15,7 @@ export default async function Page() {
         <Typography variant="body1">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         </Typography>
-        <VotingListComplete list={list} votes={votes} />
+        <Results list={list} votes={votes} />
       </Box>
     </>
   );
