@@ -1,12 +1,13 @@
 import { Box, Typography } from '@mui/material';
 import { getNameList } from 'app/actions';
 import { PageTitle } from 'app/uicomponents/PageTitle';
-import { getVotes } from 'app/voting/actions';
+import { getPartnerVotes, getVotes } from 'app/voting/actions';
 import { Results } from 'components/Results';
 
 export default async function Page() {
   const list = await getNameList();
   const votes = await getVotes();
+  const partnerVotes = await getPartnerVotes();
 
   return (
     <>
