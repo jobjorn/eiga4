@@ -1,12 +1,14 @@
 import { Typography } from '@mui/material';
 import { getNameList } from 'app/actions';
-import { colors } from 'app/uicomponents/colors';
+import { getUserWithPartners } from 'app/overview/actions';
 import { NamesForm } from 'components/NamesForm';
 import { VotingInvitation } from 'components/VotingInvitation';
 import { ListWithNames } from 'types/types';
 
 export default async function Page() {
   const list: ListWithNames[] = await getNameList();
+  const userWithPartners = await getUserWithPartners();
+
   return (
     <div
       style={{
@@ -15,18 +17,9 @@ export default async function Page() {
         gap: '20px'
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          gap: '10px',
-          alignItems: 'center',
-          justifyContent: 'space-between'
-        }}
-      >
-        <Typography variant="h3">Namn</Typography>
-        <VotingInvitation />
-      </div>
+      <Typography variant="h3">Namn</Typography>
       <NamesForm list={list} />
+      <VotingInvitation user={userWithPartners} />
     </div>
   );
 }
