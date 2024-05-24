@@ -1,10 +1,19 @@
 'use client';
 
-import { Avatar, Skeleton, TableContainer, Typography } from '@mui/material';
+import { ArrowBackIosNew } from '@mui/icons-material';
+import {
+  Avatar,
+  Button,
+  Skeleton,
+  TableContainer,
+  Typography
+} from '@mui/material';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ResultsList } from 'types/types';
 
 export const Results: React.FC<{
+  finished: boolean;
   list: ResultsList[];
   hasPartner: boolean;
   partnerMessage: string;
@@ -12,6 +21,7 @@ export const Results: React.FC<{
   avatar?: string;
   partnerAvatar?: string;
 }> = ({
+  finished,
   list,
   hasPartner,
   partnerMessage,
@@ -110,8 +120,29 @@ export const Results: React.FC<{
   if (sortedList.length === 0) {
     return <Skeleton></Skeleton>;
   }
-  console.log('list', list);
-  console.log('sortedList', sortedList);
+
+  if (!finished) {
+    return (
+      <>
+        <Typography variant="body1" style={{ flexGrow: 1 }}>
+          Du måste rösta mera innan resultaten kan visas.
+        </Typography>
+
+        <Button
+          LinkComponent={Link}
+          style={{ alignSelf: 'flex-start' }}
+          href="/voting"
+          size="large"
+          variant="text"
+          color="secondary"
+          startIcon={<ArrowBackIosNew />}
+        >
+          Fortsätt rösta
+        </Button>
+      </>
+    );
+  }
+
   return (
     <>
       <Typography variant="body1" sx={{ marginBottom: '1rem' }}>

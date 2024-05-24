@@ -82,6 +82,7 @@ export default async function Page() {
 
   const user = await getUserWithPartners();
 
+  let finished = false;
   let hasPartner = false;
   let partnerFinished = false;
   let partnerMessage = '';
@@ -141,12 +142,17 @@ export default async function Page() {
     }
   });
 
+  if (sortedList.length === list.length) {
+    finished = true;
+  }
+
   return (
     <>
-      <Box style={{ flexGrow: 1 }}>
+      <Box style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
         <PageTitle>4. Resultat</PageTitle>
         <Results
           list={resultsList}
+          finished={finished}
           hasPartner={hasPartner}
           partnerMessage={partnerMessage}
           partnerFinished={partnerFinished}
