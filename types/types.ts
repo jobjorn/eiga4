@@ -16,6 +16,12 @@ export type ListWithNames = {
   avatar?: string;
 };
 
+export type ResultsList = ListWithNames & {
+  position: number;
+  averagePosition?: number;
+  partnerPosition?: number;
+};
+
 export type UserWithPartners = Prisma.UserGetPayload<{
   include: {
     partnered: {

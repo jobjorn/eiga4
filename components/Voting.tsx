@@ -15,9 +15,8 @@ import Link from 'next/link';
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useFormState } from 'react-dom';
 import { addVote } from 'app/voting/actions';
-import { Duel, InProgressList, ListWithNames } from 'types/types';
+import { Duel, ListWithNames } from 'types/types';
 import { Duels } from './VotingDuels';
-import { VotingListInProgress } from './VotingListInProgress';
 
 export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
   list,
@@ -25,7 +24,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
 }) => {
   const [duels, setDuels] = useState<Duel[]>([]);
   const [isFinallyMerged, setIsFinallyMerged] = useState(false);
-  const [inProgressList, setInProgressList] = useState<InProgressList[]>([]);
 
   // Function to merge two sorted arrays into a single sorted array
   const merge = useCallback(
@@ -80,27 +78,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       if (result.length == list.length) {
         setIsFinallyMerged(true);
       }
-
-      result.map((name, index) => {
-        setInProgressList((prev) => {
-          let previousItem = prev.find((item) => item.name === name.name);
-
-          if (previousItem && previousItem.position < index) {
-            const updatedList = prev.filter((item) => item.name !== name.name);
-            return [
-              ...updatedList,
-              { name: name.name, position: index, id: name.nameId }
-            ];
-          } else if (!previousItem) {
-            return [
-              ...prev,
-              { name: name.name, position: index, id: name.nameId }
-            ];
-          } else {
-            return prev;
-          }
-        });
-      });
 
       return result;
     },
@@ -158,7 +135,11 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
           Det tredje steget är att rangordna de namn ni valt genom en
           omröstning. Klicka på den du föredrar i varje par.
         </Typography>
-        <form action={formAction} ref={formElement}>
+        <form
+          action={formAction}
+          ref={formElement}
+          style={{ flexGrow: 1, display: 'flex' }}
+        >
           <Duels duels={duels} />
         </form>
         {statusMessage && (
@@ -168,7 +149,6 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
             </Alert>
           </Box>
         )}
-        <VotingListInProgress inProgressList={inProgressList} list={list} />
       </>
     );
   }
