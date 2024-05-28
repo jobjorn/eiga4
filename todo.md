@@ -25,3 +25,6 @@ Här kan vi ha en att göra-lista för projektet
 - om min partner tryckt på "Start voting!"-knappen ser jag ändå bara "Start voting!"-knappen, men i koden ser det ut som att det är meningen att jag ska se "PARTNER är redo att rösta, är du?"
 - i VotingInvitation.tsx finns det en beskrivning av en if-sats som inte verkar matcha if-satsen
 - förslag: kolla redan i /names/page.tsx om man har en partner och skicka ner "hasPartner=true/false" i VotingInvitation, så kan man förenkla mycket logik med bara if(hasPartner){ alla fyra varianter }else{ sätt igång att rösta whenever }. jmfr /results/page.tsx för mycket datahämtning (som då dessutom kan ske i en server component)
+- popupen i /overview/ måste göras om så att den matchar den här popupen (eller tvärtom)
+- man får "Error: Cannot read properties of undefined (reading 'partneredAccepted')" om man försöker besöka /names utan en partner
+- när jag bjudit in en partner kan jag gå till sidan, men inte lägga till några namn - får inget error men det är en massa prisma-errors i konsollen
