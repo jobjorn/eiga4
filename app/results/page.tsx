@@ -58,8 +58,6 @@ const merge = (
 
 // Recursive function to perform merge sort on an array of ListWithNames
 const mergeSort = (list: ListWithNames[], votes: Vote[]): ListWithNames[] => {
-  //   console.log('initierar en mergeSort', list.length);
-
   // Base case: if the array has 1 or 0 elements, it is already sorted
   if (list.length <= 1) {
     return list;

@@ -36,10 +36,8 @@ export const Results: React.FC<{
     let newList = [...list];
 
     if (sortBy === 'position') {
-      console.log('Sorting by position');
       setSortedList(newList);
     } else if (sortBy === 'averagePosition') {
-      console.log('Sorting by averagePosition');
       setSortedList(
         newList.sort((a, b) =>
           a.averagePosition && b.averagePosition
@@ -48,7 +46,6 @@ export const Results: React.FC<{
         )
       );
     } else if (sortBy === 'partnerPosition') {
-      console.log('Sorting by partnerPosition');
       setSortedList(
         newList.sort((a, b) =>
           a.partnerPosition && b.partnerPosition
@@ -57,7 +54,6 @@ export const Results: React.FC<{
         )
       );
     } else if (sortBy === 'name') {
-      console.log('Sorting by name');
       setSortedList(newList.sort((a, b) => a.name.localeCompare(b.name)));
     }
   }, [sortBy, list]);
