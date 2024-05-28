@@ -35,14 +35,18 @@ export const NamesList = (props: NamesListProps) => {
               display: `flex`,
               justifyContent: `space-between`,
               alignItems: `center`,
-              padding: '5px'
+              padding: '2px'
             }}
           >
-            <div style={{ display: 'flex', gap: '5px' }}>
+            <div style={{ display: 'flex', gap: '5px', alignItems: 'center' }}>
               {item.avatar !== undefined && (
                 <Avatar
                   alt={item.user}
-                  sx={{ bgcolor: theme.palette.primary.main }}
+                  sx={{
+                    bgcolor: theme.palette.primary.main,
+                    width: 30,
+                    height: 30
+                  }}
                   src={item.avatar}
                 />
               )}
