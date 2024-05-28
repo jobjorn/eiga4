@@ -4,9 +4,10 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { StatusMessage, ListWithNames } from '../types/types';
+import { startVoting } from './names/actions';
 
 const prisma = new PrismaClient({
-  log: ['warn', 'error']
+  /*  log: ['warn', 'error'] */
 });
 
 /* nedan fem funktioner borde flyttas över till egna actions-filer där de hör hemma */
@@ -22,15 +23,20 @@ export async function addNames(
       timestamp: Date.now()
     };
   }
-  let namesString = '';
-  let namesArray: string[] = [];
+  /* let namesString = '';
+  let namesArray: string[] = []; */
   const session = await getSession();
   const user = session?.user ?? null;
+  const namesList = formData.get('newNameList')?.toString().split(',') ?? [];
 
-  namesString = formData.get('names') as string;
-  namesArray = namesString.split(/[\n,]/).map((name) => name.trim());
+  console.log('NamesList', namesList?.toString());
+  console.log('FormDAta', formData);
+  /* namesString = formData.get('names') as string;
+  namesArray = namesString
+    .split(/[\n,]/)
+    .map((name) => name.trim().toLocaleLowerCase()); */
 
-  if (namesArray.includes('Jobjörn')) {
+  if (namesList.includes('Jobjörn' || 'jobjörn')) {
     return {
       severity: 'error',
       message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`,
@@ -45,41 +51,45 @@ export async function addNames(
     };
   }
 
-  namesArray.forEach(async (name) => {
-    await prisma.list.create({
-      data: {
-        user: {
-          connect: {
-            sub: user.sub
-          }
-        },
-        name: {
-          connectOrCreate: {
-            where: {
-              name: name
-            },
-            create: {
-              name: name
+  namesList.forEach(async (name) => {
+    await prisma.list
+      .create({
+        data: {
+          user: {
+            connect: {
+              sub: user.sub
             }
-          }
-        },
-        position: 1
-      }
-    });
+          },
+          name: {
+            connectOrCreate: {
+              where: {
+                name: name
+              },
+              create: {
+                name: name
+              }
+            }
+          },
+          position: 1
+        }
+      })
+      .then(() => {
+        startVoting(null, formData, false);
+      });
   });
 
   revalidateTag('list');
 
-  if (namesArray.length == 1) {
+  if (namesList.length === 1) {
     return {
       severity: 'success',
-      message: `Namnet ${namesArray[0]} har lagts till.`,
+      message: `Namnet ${namesList[0]} har lagts till.`,
       timestamp: Date.now()
     };
   } else {
     return {
       severity: 'success',
-      message: `Namnen ${namesArray.join(', ')} har lagts till.`,
+      message: `Namnen ${namesList.join(', ')} har lagts till.`,
       timestamp: Date.now()
     };
   }
