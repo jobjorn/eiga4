@@ -8,7 +8,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import React, { useRef, useEffect, useOptimistic, useState, use } from 'react';
+import React, { useRef, useEffect, useOptimistic, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { addNames } from 'app/actions';
 import { theme } from 'styles/theme';
@@ -20,9 +20,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
   const Swal = require('sweetalert2');
   const { user, isLoading } = useUser();
   const [textField, setTextField] = useState('');
-  const [newNameList, setNewNameList] = useState<ListWithNames[]>([
-    { name: '', user: '', id: 1 }
-  ]);
+  const [newNameList, setNewNameList] = useState<ListWithNames[]>([]);
   const [statusMessage, formAction] = useFormState(addNames, null);
   const [optimisticNameList, addOptimisticNameList] = useOptimistic(
     list,
@@ -42,13 +40,16 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
       (lowerCaseName) => !namesList.includes(lowerCaseName)
     );
     if (user) {
-      const newNameList = withoutDuplicates.map((name, index) => {
-        return {
-          name: name,
-          id: -index,
-          user: user.sub || ''
-        };
-      });
+      const newNameList: ListWithNames[] = withoutDuplicates.map(
+        (name, index) => {
+          return {
+            name: name,
+            id: -index,
+            nameId: -index,
+            user: user.sub || ''
+          };
+        }
+      );
       setNewNameList(newNameList);
     }
   }, [user, list, textField]);
