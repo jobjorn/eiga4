@@ -119,3 +119,14 @@ td.nameCell, th.nameCell {
 .resultsTable tr:nth-child(odd) td {
   background-color: #EAECED;
 }
+
+
+ol.splashList ::marker {
+	font-weight: 600;
+	color: #F2BF64;
+	font-size: 1.8rem;
+}
+
+ol.splashList li {
+  vertical-align: top;
+}
