@@ -4,7 +4,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { StatusMessage, ListWithNames } from '../types/types';
-import { startVoting } from './names/action';
+import { startVoting } from './names/actions';
 
 const prisma = new PrismaClient({
   /*  log: ['warn', 'error'] */
