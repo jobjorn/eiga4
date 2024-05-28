@@ -96,6 +96,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
               return {
                 name: name,
                 id: -index,
+                nameId: -index,
                 user: user.sub || ''
               };
             });

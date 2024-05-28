@@ -12,7 +12,14 @@ export type ListWithNames = {
   name: string;
   user: string;
   id: number;
+  nameId: number;
   avatar?: string;
+};
+
+export type ResultsList = ListWithNames & {
+  position: number;
+  averagePosition?: number;
+  partnerPosition?: number;
 };
 
 export type UserWithPartners = Prisma.UserGetPayload<{
