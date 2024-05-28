@@ -34,6 +34,7 @@ export const VotingInvitation: React.FC<{
       user.partnering[0].partnering.readyToVote === false)
   ) {
     // Om användaren inte har någon definierad partner och inte heller någon inbjudan till att bli partnerad
+    // FIXME: Ovan beskrivning motsvarar inte if-satsen
     return (
       <form ref={formElement} action={formActionStartVote}>
         <Box
