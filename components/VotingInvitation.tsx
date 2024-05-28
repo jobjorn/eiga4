@@ -19,7 +19,6 @@ export const VotingInvitation: React.FC<{
 
   /* 
   1. Kan man påbörja omröstning som ensam förälder?? 
-  2. Ändra så att man inte längre är redo att rösta om man lägger till ett namn
   */
 
   const formElement = useRef<HTMLFormElement>(null);
@@ -29,7 +28,11 @@ export const VotingInvitation: React.FC<{
         <Skeleton style={{ flexGrow: 1 }} />
       </PartnerBox>
     );
-  } else if (user.readyToVote === false && user?.partnered.length === 0) {
+  } else if (
+    (user.readyToVote === false && user?.partnered.length === 0) ||
+    (user.readyToVote === false &&
+      user.partnering[0].partnering.readyToVote === false)
+  ) {
     // Om användaren inte har någon definierad partner och inte heller någon inbjudan till att bli partnerad
     return (
       <form ref={formElement} action={formActionStartVote}>
@@ -51,10 +54,8 @@ export const VotingInvitation: React.FC<{
         )}
       </form>
     );
-  } /* if (
-    user.readyToVote &&
-    user.partnering[0].partnered?.readyToVote === false
-  ) */ else {
+  }
+  if (user.readyToVote && user.partnering[0].partnered?.readyToVote === false) {
     // Om användaren är redo att rösta, men partnern inte är det
 
     return (
@@ -65,8 +66,7 @@ export const VotingInvitation: React.FC<{
         </Typography>
       </PartnerBox>
     );
-  } /* else {
-  /* else if (
+  } else if (
     user.readyToVote === false &&
     user.partnering[0].partnered?.readyToVote === true
   ) {
@@ -88,8 +88,7 @@ export const VotingInvitation: React.FC<{
         )}
       </form>
     );
-  } */
-  /*  else if (
+  } else if (
     user.readyToVote === true &&
     user.partnering[0].partnered?.readyToVote === true
   ) {
@@ -107,8 +106,6 @@ export const VotingInvitation: React.FC<{
         Till omröstning
       </Button>
     );
-  } 
+  }
   return <Box>Okänt fel</Box>;
-} 
-*/
 };

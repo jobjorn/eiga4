@@ -6,7 +6,7 @@ import { revalidateTag } from 'next/cache';
 import { StatusMessage, UserWithPartners } from 'types/types';
 
 const prisma = new PrismaClient({
-  log: ['query', 'info', 'warn', 'error']
+  /*   log: ['query', 'info', 'warn', 'error'] */
 });
 
 export async function getUserWithPartners(): Promise<UserWithPartners | null> {
