@@ -4,9 +4,7 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { StatusMessage } from 'types/types';
 
-const prisma = new PrismaClient({
-  /*   log: ['query', 'info', 'warn', 'error'] */
-});
+const prisma = new PrismaClient({ log: ['warn', 'error'] });
 
 export async function startVoting(
   previousState: StatusMessage | null | undefined,
@@ -67,9 +65,7 @@ export async function startVoting(
       message: 'Du verkar inte vara registrerad.',
       timestamp: Date.now()
     };
-  }
-
-  if (dbUser && readyToVote === false) {
+  } else if (dbUser && readyToVote === false) {
     if (dbUser) {
       await prisma.user.update({
         where: {
@@ -85,8 +81,7 @@ export async function startVoting(
         timestamp: Date.now()
       };
     }
-  }
-  if (dbUser) {
+  } else if (dbUser) {
     await prisma.user.update({
       where: {
         sub: user.sub
@@ -101,6 +96,13 @@ export async function startVoting(
       timestamp: Date.now()
     };
   }
+
+  // Om inget ovan gick igenom körs detta ending return statement
+  return {
+    severity: 'error',
+    message: 'Något gick fel.',
+    timestamp: Date.now()
+  };
 }
 /*
  * Uppdatera readyToVote, så det är en aktuell knapp där nere
