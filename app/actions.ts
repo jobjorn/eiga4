@@ -4,7 +4,6 @@ import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { StatusMessage, ListWithNames, UserWithPartners } from '../types/types';
-import { startVoting } from './names/actions';
 import { getUserWithPartners } from './overview/actions';
 
 const prisma = new PrismaClient({
@@ -75,7 +74,7 @@ export async function addNames(
         }
       })
       .then(() => {
-        startVoting(null, formData, false);
+        // Här ska vi avmarkera alla som är redo att rösta
       });
   });
 

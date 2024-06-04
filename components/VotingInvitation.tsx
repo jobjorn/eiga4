@@ -4,7 +4,7 @@ import { Alert, Button, Link, Skeleton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRef } from 'react';
 import { useFormState } from 'react-dom';
-import { startVoting } from 'app/names/actions';
+import { toggleReadyToVote } from 'app/names/actions';
 import { UserWithPartners } from 'types/types';
 import { PartnerBox } from './PartnerBox';
 import { Submit } from './Submit';
@@ -13,7 +13,10 @@ export const VotingInvitation: React.FC<{
   user: UserWithPartners;
   hasPartner: boolean;
 }> = ({ user, hasPartner }) => {
-  const [statusMessage, formActionStartVote] = useFormState(startVoting, null);
+  const [statusMessage, formActionStartVote] = useFormState(
+    toggleReadyToVote,
+    null
+  );
   const formElement = useRef<HTMLFormElement>(null);
 
   if (user === null) {
