@@ -24,6 +24,8 @@ export const NamesForm: React.FC<{
       return [...state, ...newNames];
     }
   );
+  const [readyToProceed, setReadyToProceed] = useState(false);
+  const formElement = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     const lowerCaseNamesArray = textField
@@ -50,7 +52,11 @@ export const NamesForm: React.FC<{
     }
   }, [user, list, textField]);
 
-  const formElement = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (hasPartner && user.readyToVote) {
+      setReadyToProceed(true);
+    }
+  }, [user, hasPartner]);
 
   useEffect(() => {
     if (statusMessage?.severity !== 'error' && formElement.current) {
@@ -95,19 +101,24 @@ export const NamesForm: React.FC<{
         )}
         <form
           action={async (formData) => {
-            Swal.fire({
-              title: 'Är du säker?',
-              text: 'Om du lägger till ett namn så måste ni klicka på redoknappen igen',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: theme.palette.success.main,
-              cancelButtonColor: theme.palette.secondary.main
-            }).then(async (result: any) => {
-              if (result.isConfirmed) {
-                addOptimisticNameList(newNameList);
-                formAction(formData);
-              }
-            });
+            if (readyToProceed) {
+              Swal.fire({
+                title: 'Är du säker?',
+                text: 'Om du lägger till ett namn så måste ni klicka på redoknappen igen',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: theme.palette.success.main,
+                cancelButtonColor: theme.palette.secondary.main
+              }).then(async (result: any) => {
+                if (result.isConfirmed) {
+                  addOptimisticNameList(newNameList);
+                  formAction(formData);
+                }
+              });
+            } else {
+              addOptimisticNameList(newNameList);
+              formAction(formData);
+            }
           }}
           ref={formElement}
         >
