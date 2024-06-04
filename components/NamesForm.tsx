@@ -16,7 +16,10 @@ import { ListWithNames } from 'types/types';
 import { NamesList } from './NamesList';
 import { Submit } from './Submit';
 
-export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
+export const NamesForm: React.FC<{
+  list: ListWithNames[];
+  hasPartner: boolean;
+}> = ({ list, hasPartner }) => {
   const Swal = require('sweetalert2');
   const { user, isLoading } = useUser();
   const [textField, setTextField] = useState('');

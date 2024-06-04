@@ -11,7 +11,8 @@ import { Submit } from './Submit';
 
 export const VotingInvitation: React.FC<{
   user: UserWithPartners;
-}> = ({ user }) => {
+  hasPartner: boolean;
+}> = ({ user, hasPartner }) => {
   const [statusMessageStartVote, formActionStartVote] = useFormState(
     startVoting,
     null

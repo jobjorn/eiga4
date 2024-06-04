@@ -8,19 +8,24 @@ import { ListWithNames, UserWithPartners } from 'types/types';
 
 export default async function Page() {
   const list: ListWithNames[] = await getNameList();
-  const userWithPartners: UserWithPartners | null = await getUserWithPartners();
+  const user: UserWithPartners | null = await getUserWithPartners();
 
-  if (!userWithPartners) {
-    return <Skeleton></Skeleton>;
+  let hasPartner = false;
+
+  if (!user) {
+    return <Skeleton style={{ flexGrow: 1 }} />;
+  } else if (user.partnering.length > 0 && user.partnered.length > 0) {
+    // Om användaren har en partner
+    hasPartner = true;
   }
 
   return (
     <>
       <Box style={{ flexGrow: 1 }}>
         <PageTitle>2. Namn</PageTitle>
-        <NamesForm list={list} />
+        <NamesForm list={list} hasPartner={hasPartner} />
       </Box>
-      <VotingInvitation user={userWithPartners} />
+      <VotingInvitation user={user} hasPartner={hasPartner} />
     </>
   );
 }
