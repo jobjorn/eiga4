@@ -3,8 +3,9 @@
 import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
-import { StatusMessage, ListWithNames } from '../types/types';
+import { StatusMessage, ListWithNames, UserWithPartners } from '../types/types';
 import { startVoting } from './names/actions';
+import { getUserWithPartners } from './overview/actions';
 
 const prisma = new PrismaClient({
   /*  log: ['warn', 'error'] */
@@ -124,29 +125,29 @@ export async function removeName(
 }
 
 export async function getNameList(): Promise<ListWithNames[]> {
-  const session = await getSession();
-  const user = session?.user ?? null;
+  const user: UserWithPartners | null = await getUserWithPartners();
 
   if (!user) {
     return [];
   }
 
-  const findPartner = await prisma.user.findUnique({
-    where: {
-      sub: user.sub
-    },
-    include: {
-      partnering: true
-    }
-  });
+  let partnerSub = '';
+  if (user.partnering.length > 0 && user.partnered.length > 0) {
+    partnerSub = user.partnering[0].partnered?.sub ?? '';
+  }
 
-  if (
-    findPartner?.partnering[0].partneredAccepted === true &&
-    findPartner?.partnering[0].partneredSub !== null
-  ) {
-    const partnerResult = await prisma.list.findMany({
+  let results = [];
+  if (partnerSub) {
+    results = await prisma.list.findMany({
       where: {
-        userSub: findPartner.partnering[0].partneredSub
+        OR: [
+          {
+            userSub: user.sub
+          },
+          {
+            userSub: partnerSub
+          }
+        ]
       },
       include: {
         name: true,
@@ -158,8 +159,8 @@ export async function getNameList(): Promise<ListWithNames[]> {
         }
       }
     });
-
-    const userResult = await prisma.list.findMany({
+  } else {
+    results = await prisma.list.findMany({
       where: {
         userSub: user.sub
       },
@@ -173,26 +174,23 @@ export async function getNameList(): Promise<ListWithNames[]> {
         }
       }
     });
-
-    const allNames = [...partnerResult, ...userResult];
-    const names = allNames.flatMap((item) => {
-      return [
-        {
-          name: item.name.name,
-          user: item.user.email,
-          id: item.id,
-          nameId: item.name.id,
-          avatar: item.user.picture ?? ''
-        }
-      ];
-    });
-
-    const allNamesSorted = names.sort((a, b) => {
-      return a.name.localeCompare(b.name, 'sv');
-    });
-
-    return allNamesSorted;
-  } else {
-    return [];
   }
+
+  const names = results.flatMap((item) => {
+    return [
+      {
+        name: item.name.name,
+        user: item.user.email,
+        id: item.id,
+        nameId: item.name.id,
+        avatar: item.user.picture ?? ''
+      }
+    ];
+  });
+
+  const allNamesSorted = names.sort((a, b) => {
+    return a.name.localeCompare(b.name, 'sv');
+  });
+
+  return allNamesSorted;
 }
