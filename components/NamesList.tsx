@@ -13,7 +13,6 @@ type NamesListProps = {
 };
 export const NamesList = (props: NamesListProps) => {
   const formElement = useRef<HTMLFormElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [statusMessage, formAction] = useFormState(removeName, null);
 
   return (
