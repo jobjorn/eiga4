@@ -1,27 +1,20 @@
 'use client';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import {
-  Alert,
-  Box,
-  Skeleton,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material';
+
+import { Alert, Box, Stack, TextField, Typography } from '@mui/material';
 import React, { useRef, useEffect, useOptimistic, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { addNames } from 'app/actions';
 import { theme } from 'styles/theme';
-import { ListWithNames } from 'types/types';
+import { ListWithNames, UserWithPartners } from 'types/types';
 import { NamesList } from './NamesList';
 import { Submit } from './Submit';
 
 export const NamesForm: React.FC<{
+  user: UserWithPartners;
   list: ListWithNames[];
   hasPartner: boolean;
-}> = ({ list, hasPartner }) => {
+}> = ({ user, list, hasPartner }) => {
   const Swal = require('sweetalert2');
-  const { user, isLoading } = useUser();
   const [textField, setTextField] = useState('');
   const [newNameList, setNewNameList] = useState<ListWithNames[]>([]);
   const [statusMessage, formAction] = useFormState(addNames, null);
@@ -42,7 +35,7 @@ export const NamesForm: React.FC<{
     const withoutDuplicates = lowerCaseNamesArray.filter(
       (lowerCaseName) => !namesList.includes(lowerCaseName)
     );
-    if (user) {
+    if (user && user.sub) {
       const newNameList: ListWithNames[] = withoutDuplicates.map(
         (name, index) => {
           return {
@@ -65,21 +58,6 @@ export const NamesForm: React.FC<{
     }
   }, [statusMessage]);
 
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '5px'
-        }}
-      >
-        <Typography variant="h5">Lägg till nya namn</Typography>
-        <Skeleton variant="rectangular" height={60} />
-      </div>
-    );
-  }
-
   if (!user || !user.sub) {
     return (
       <div
@@ -99,7 +77,7 @@ export const NamesForm: React.FC<{
 
   return (
     <>
-      <NamesList list={optimisticNameList} user={user} />
+      <NamesList list={optimisticNameList} />
       <div
         style={{
           display: 'flex',

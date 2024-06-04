@@ -10,7 +10,6 @@ import { Submit } from './Submit';
 
 type NamesListProps = {
   list: ListWithNames[];
-  user: any;
 };
 export const NamesList = (props: NamesListProps) => {
   const formElement = useRef<HTMLFormElement>(null);

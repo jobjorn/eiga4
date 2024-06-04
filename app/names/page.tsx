@@ -23,7 +23,7 @@ export default async function Page() {
     <>
       <Box style={{ flexGrow: 1 }}>
         <PageTitle>2. Namn</PageTitle>
-        <NamesForm list={list} hasPartner={hasPartner} />
+        <NamesForm user={user} list={list} hasPartner={hasPartner} />
       </Box>
       <VotingInvitation user={user} hasPartner={hasPartner} />
     </>
