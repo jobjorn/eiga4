@@ -1,18 +1,12 @@
 Här kan vi ha en att göra-lista för projektet
 
-- Varning för att lägga till namn när man tryckt på påbörja omröstningsknappen.
-
-  - kolla om man är redo att rösta.
-
 - titleCase överallt där man sparar ett namn eller jämför ett namn.
 - useOptimistic fungerar inte i names
-- om jag trycker att jag är readyToVote så ändras det till TRUE i databasen... och för min partner ändras det till FALSE, så vi kommer inte vidare
 - det går att radera namn utan att varningen triggas
 - det går att radera namn som ens partner lagt till
 - om man försöker lägga till ett namn som redan finns står det "Namnet har lagts till" (istället för "Namnet NAMN har lagts till") och det dyker (efter reload) upp en tom namnruta
 - det går inte att lägga till ett namn som redan står med/det syns inte att båda partners har lagt till samma namn
 - varningspopupen har en helt annan design än resten av sidan, särskilt knapparna sticker ut
-- varningspopupen kommer upp även om ingen sagt att hen är redo
 - det finns ingen information som indikerar att ens partner är redo och väntar på en
 - borde lägga till-rutan vara utgråad eller så om båda startat röstning?
 - det står "Cancel" på engelska i popupen, och "OK" är lite kort formulerat - borde stå vad som händer egentligen
