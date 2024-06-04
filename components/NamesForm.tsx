@@ -139,7 +139,7 @@ export const NamesForm: React.FC<{
               name="names"
               multiline
               minRows={3}
-              onChange={(event) => setTextField(event.target.value)}
+              onChange={(event) => setTextField(event.target.value.trim())}
             />
             <input
               type="hidden"
