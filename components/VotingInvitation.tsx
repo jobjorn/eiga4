@@ -4,7 +4,7 @@ import { Alert, Button, Link, Skeleton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useRef } from 'react';
 import { useFormState } from 'react-dom';
-import { startVoting } from 'app/names/action';
+import { startVoting } from 'app/names/actions';
 import { UserWithPartners } from 'types/types';
 import { PartnerBox } from './PartnerBox';
 import { Submit } from './Submit';
@@ -34,6 +34,7 @@ export const VotingInvitation: React.FC<{
       user.partnering[0].partnering.readyToVote === false)
   ) {
     // Om användaren inte har någon definierad partner och inte heller någon inbjudan till att bli partnerad
+    // FIXME: Ovan beskrivning motsvarar inte if-satsen
     return (
       <form ref={formElement} action={formActionStartVote}>
         <Box
