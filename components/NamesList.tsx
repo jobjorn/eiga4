@@ -1,4 +1,5 @@
 'use client';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import { Alert, Avatar, Box, Typography } from '@mui/material';
 import React, { useRef } from 'react';
 import { useFormState } from 'react-dom';
@@ -14,6 +15,7 @@ type NamesListProps = {
 export const NamesList = (props: NamesListProps) => {
   const formElement = useRef<HTMLFormElement>(null);
   const [statusMessage, formAction] = useFormState(removeName, null);
+  const { user } = useUser();
 
   return (
     <form action={formAction} ref={formElement}>
@@ -48,11 +50,14 @@ export const NamesList = (props: NamesListProps) => {
                   src={item.avatar}
                 />
               )}
+
               <Typography variant="body1">{item.name}</Typography>
             </div>
-            <Submit variant="text" name="remove" value={item.id}>
-              <AiOutlineClose />
-            </Submit>
+            {user?.email === item.user && (
+              <Submit variant="text" name="remove" value={item.id}>
+                <AiOutlineClose />
+              </Submit>
+            )}
           </div>
         ))}
         {statusMessage && (

@@ -3,7 +3,6 @@ Här kan vi ha en att göra-lista för projektet
 - titleCase överallt där man sparar ett namn eller jämför ett namn.
 - useOptimistic fungerar inte i names
 - det går att radera namn utan att varningen triggas
-- det går att radera namn som ens partner lagt till
 - om man försöker lägga till ett namn som redan finns står det "Namnet har lagts till" (istället för "Namnet NAMN har lagts till") och det dyker (efter reload) upp en tom namnruta
 - det går inte att lägga till ett namn som redan står med/det syns inte att båda partners har lagt till samma namn
 - varningspopupen har en helt annan design än resten av sidan, särskilt knapparna sticker ut
