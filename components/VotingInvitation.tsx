@@ -41,6 +41,36 @@ export const VotingInvitation: React.FC<{
     );
   } else {
     // Om det finns en partner
+    if (
+      user.readyToVote === false &&
+      user.partnering[0].partnered?.readyToVote === true
+    ) {
+      // Om den inloggade användaren inte är redo att börja rösta, men partnern är.
+
+      return (
+        <form ref={formElement} action={formActionStartVote}>
+          <Box
+            sx={{
+              display: 'flex',
+              placeContent: 'end'
+            }}
+          >
+            <Submit>
+              {user.partnering[0].partnered.name} är redo att rösta, är du?
+            </Submit>
+          </Box>
+
+          {statusMessage && (
+            <Box mt={2}>
+              <Alert severity={statusMessage.severity}>
+                {statusMessage.message}
+              </Alert>
+            </Box>
+          )}
+        </form>
+      );
+    }
+    // Om det finns en partner
     if (user.readyToVote === false) {
       // Om den inloggade användaren inte är redo att börja rösta, visa redo-knapp:
 
