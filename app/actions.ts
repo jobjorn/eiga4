@@ -1,6 +1,5 @@
 'use server';
 
-import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
 import { StatusMessage, ListWithNames, UserWithPartners } from '../types/types';
@@ -23,33 +22,24 @@ export async function addNames(
       timestamp: Date.now()
     };
   }
-  /* let namesString = '';
-  let namesArray: string[] = []; */
-  const session = await getSession();
-  const user = session?.user ?? null;
+
+  const user: UserWithPartners | null = await getUserWithPartners();
+
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar inte vara inloggad.',
+      timestamp: Date.now()
+    };
+  }
+
+  let hasPartner = false;
+  if (user.partnering.length > 0 && user.partnered.length > 0) {
+    // Om användaren har en partner
+    hasPartner = true;
+  }
+
   const namesList = formData.get('newNameList')?.toString().split(',') ?? [];
-
-  console.log('NamesList', namesList?.toString());
-  console.log('FormDAta', formData);
-  /* namesString = formData.get('names') as string;
-  namesArray = namesString
-    .split(/[\n,]/)
-    .map((name) => name.trim().toLocaleLowerCase()); */
-
-  if (namesList.includes('Jobjörn' || 'jobjörn')) {
-    return {
-      severity: 'error',
-      message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`,
-      timestamp: Date.now()
-    };
-  }
-  if (user === null) {
-    return {
-      severity: 'error',
-      message: `Du är inte inloggad.`,
-      timestamp: Date.now()
-    };
-  }
 
   namesList.forEach(async (name) => {
     await prisma.list
@@ -73,8 +63,26 @@ export async function addNames(
           position: 1
         }
       })
-      .then(() => {
-        // Här ska vi avmarkera alla som är redo att rösta
+      .then(async () => {
+        await prisma.user.update({
+          where: {
+            sub: user.sub
+          },
+          data: {
+            readyToVote: false
+          }
+        });
+
+        if (hasPartner) {
+          await prisma.user.update({
+            where: {
+              sub: user.partnering[0].partnered?.sub
+            },
+            data: {
+              readyToVote: false
+            }
+          });
+        }
       });
   });
 
