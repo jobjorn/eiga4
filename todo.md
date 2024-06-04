@@ -4,7 +4,6 @@ Här kan vi ha en att göra-lista för projektet
 
   - kolla om man är redo att rösta.
 
-- Om man försöker lägga till blank space - disabled knapp.
 - titleCase överallt där man sparar ett namn eller jämför ett namn.
 - useOptimistic fungerar inte i names
 - om jag trycker att jag är readyToVote så ändras det till TRUE i databasen... och för min partner ändras det till FALSE, så vi kommer inte vidare
