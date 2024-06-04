@@ -4,6 +4,7 @@ import { Alert, Box, Stack, TextField, Typography } from '@mui/material';
 import React, { useRef, useEffect, useOptimistic, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { addNames } from 'app/actions';
+import { toTitleCase } from 'lib/toTitleCase';
 import { theme } from 'styles/theme';
 import { ListWithNames, UserWithPartners } from 'types/types';
 import { NamesList } from './NamesList';
@@ -30,7 +31,7 @@ export const NamesForm: React.FC<{
   useEffect(() => {
     const lowerCaseNamesArray = textField
       .split(/[\n,]/)
-      .map((name) => name.trim().toLowerCase())
+      .map((name) => toTitleCase(name.trim()))
       .filter((name) => name === name);
 
     const namesList = list.map((item) => item.name.toLowerCase());
