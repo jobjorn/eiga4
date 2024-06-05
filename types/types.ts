@@ -14,6 +14,8 @@ export type ListWithNames = {
   id: number;
   nameId: number;
   avatar?: string;
+  double?: boolean;
+  doubleAvatar?: string;
 };
 
 export type ResultsList = ListWithNames & {

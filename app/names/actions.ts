@@ -67,6 +67,3 @@ export async function toggleReadyToVote(
     timestamp: Date.now()
   };
 }
-/*
- * Uppdatera readyToVote, så det är en aktuell knapp där nere
- */

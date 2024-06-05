@@ -95,9 +95,12 @@ export async function addNames(
       timestamp: Date.now()
     };
   } else {
+    let namesListString =
+      namesList.slice(0, -1).join(', ') + ' och ' + namesList.slice(-1);
+
     return {
       severity: 'success',
-      message: `Namnen ${namesList.join(', ')} har lagts till.`,
+      message: `Namnen ${namesListString} har lagts till.`,
       timestamp: Date.now()
     };
   }
@@ -115,10 +118,23 @@ export async function removeName(
     };
   }
 
-  const id = parseInt(formData.get('remove') as string, 10);
+  const user: UserWithPartners | null = await getUserWithPartners();
+
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar inte vara inloggad.',
+      timestamp: Date.now()
+    };
+  }
+
+  const nameId = parseInt(formData.get('remove') as string, 10);
   await prisma.list.delete({
     where: {
-      id
+      userSub_nameId: {
+        nameId: nameId,
+        userSub: user.sub
+      }
     }
   });
 
@@ -195,7 +211,27 @@ export async function getNameList(): Promise<ListWithNames[]> {
     ];
   });
 
-  const allNamesSorted = names.sort((a, b) => {
+  const updatedNames = names.map((item) => {
+    const duplicateIndex = names.findIndex(
+      (name) => name.nameId === item.nameId && name.id !== item.id
+    );
+    if (duplicateIndex !== -1) {
+      const duplicate = names[duplicateIndex];
+      const double = true;
+      const doubleAvatar = duplicate.avatar;
+
+      names.splice(duplicateIndex, 1);
+
+      return {
+        ...item,
+        double,
+        doubleAvatar
+      };
+    }
+    return item;
+  });
+
+  const allNamesSorted = updatedNames.sort((a, b) => {
     return a.name.localeCompare(b.name, 'sv');
   });
 

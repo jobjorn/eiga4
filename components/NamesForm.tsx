@@ -93,13 +93,6 @@ export const NamesForm: React.FC<{
         }}
       >
         <Typography variant="h5">Lägg till nya namn</Typography>
-        {statusMessage && (
-          <Box mt={2}>
-            <Alert severity={statusMessage.severity}>
-              {statusMessage.message}
-            </Alert>
-          </Box>
-        )}
         <form
           action={async (formData) => {
             if (readyToProceed) {
@@ -125,7 +118,7 @@ export const NamesForm: React.FC<{
         >
           <Stack spacing={2}>
             <TextField
-              label="Namn"
+              label="Första, andra, tredje..."
               name="names"
               multiline
               minRows={3}
@@ -138,6 +131,13 @@ export const NamesForm: React.FC<{
             />
             <Submit disabled={textField === ''}>Lägg till</Submit>
           </Stack>
+          {statusMessage && (
+            <Box mt={2}>
+              <Alert severity={statusMessage.severity}>
+                {statusMessage.message}
+              </Alert>
+            </Box>
+          )}
         </form>
       </div>
     </>
