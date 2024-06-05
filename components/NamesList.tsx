@@ -28,9 +28,13 @@ export const NamesList: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
           gap: '5px'
         }}
       >
-        {list.map((item) => (
-          <NameTag item={item} user={user} key={item.id} />
-        ))}
+        {list.map((item) => {
+          if (item) {
+            return <NameTag item={item} user={user} key={item.id} />;
+          } else {
+            return <></>;
+          }
+        })}
       </div>
 
       {statusMessage && (

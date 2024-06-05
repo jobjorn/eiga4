@@ -2,7 +2,6 @@ Här kan vi ha en att göra-lista för projektet
 
 - useOptimistic fungerar inte i names
 - det går att radera namn utan att varningen triggas
-- om man försöker lägga till ett namn som redan finns står det "Namnet har lagts till" (istället för "Namnet NAMN har lagts till") och det dyker (efter reload) upp en tom namnruta
 - varningspopupen har en helt annan design än resten av sidan, särskilt knapparna sticker ut
 - borde lägga till-rutan vara utgråad eller så om båda startat röstning?
 - det står "Cancel" på engelska i popupen, och "OK" är lite kort formulerat - borde stå vad som händer egentligen

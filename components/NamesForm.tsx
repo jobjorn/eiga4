@@ -29,26 +29,21 @@ export const NamesForm: React.FC<{
   const formElement = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    const lowerCaseNamesArray = textField
-      .split(/[\n,]/)
-      .map((name) => toTitleCase(name.trim()))
-      .filter((name) => name === name);
+    const names = textField
+      .split(/[\n,]/) // Split on new line or comma
+      .map((name) => toTitleCase(name.trim())) // Trim and title case
+      .filter((name) => name !== '') // Remove empty strings
+      .filter((name, index, self) => self.indexOf(name) === index); // Remove duplicates
 
-    const namesList = list.map((item) => item.name.toLowerCase());
-    const withoutDuplicates = lowerCaseNamesArray.filter(
-      (lowerCaseName) => !namesList.includes(lowerCaseName)
-    );
     if (user && user.sub) {
-      const newNameList: ListWithNames[] = withoutDuplicates.map(
-        (name, index) => {
-          return {
-            name: name,
-            id: -index,
-            nameId: -index,
-            user: user.sub || ''
-          };
-        }
-      );
+      const newNameList: ListWithNames[] = names.map((name, index) => {
+        return {
+          name: name,
+          id: -index,
+          nameId: -index,
+          user: user.sub || ''
+        };
+      });
       setNewNameList(newNameList);
     }
   }, [user, list, textField]);
