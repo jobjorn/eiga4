@@ -17,7 +17,6 @@ export const NamesList: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
   if (!user) {
     return <Skeleton></Skeleton>;
   }
-  console.log('list', list);
 
   return (
     <form action={formAction} ref={formElement}>
@@ -32,7 +31,7 @@ export const NamesList: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
           if (item) {
             return <NameTag item={item} user={user} key={item.id} />;
           } else {
-            return <></>;
+            return;
           }
         })}
       </div>
