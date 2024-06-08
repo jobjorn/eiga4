@@ -1,54 +1,64 @@
 'use client';
-import { useUser } from '@auth0/nextjs-auth0/client';
-import {
-  Alert,
-  Box,
-  Skeleton,
-  Stack,
-  TextField,
-  Typography
-} from '@mui/material';
+
+import { Alert, Box, Stack, TextField, Typography } from '@mui/material';
 import React, { useRef, useEffect, useOptimistic, useState } from 'react';
 import { useFormState } from 'react-dom';
 import { addNames } from 'app/actions';
-import { ListWithNames } from 'types/types';
+import { toTitleCase } from 'lib/toTitleCase';
+import { theme } from 'styles/theme';
+import { ListWithNames, UserWithPartners } from 'types/types';
 import { NamesList } from './NamesList';
 import { Submit } from './Submit';
 
-export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
-  const { user, isLoading } = useUser();
+export const NamesForm: React.FC<{
+  user: UserWithPartners;
+  list: ListWithNames[];
+  hasPartner: boolean;
+}> = ({ user, list, hasPartner }) => {
+  const Swal = require('sweetalert2');
   const [textField, setTextField] = useState('');
+  const [newNameList, setNewNameList] = useState<ListWithNames[]>([]);
+  const [statusMessage, formAction] = useFormState(addNames, null);
   const [optimisticNameList, addOptimisticNameList] = useOptimistic(
     list,
     (state, newNames: ListWithNames[]) => {
       return [...state, ...newNames];
     }
   );
-
-  const [statusMessage, formAction] = useFormState(addNames, null);
-
+  const [readyToProceed, setReadyToProceed] = useState(false);
   const formElement = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    const names = textField
+      .split(/[\n,]/) // Split on new line or comma
+      .map((name) => toTitleCase(name.trim())) // Trim and title case
+      .filter((name) => name !== '') // Remove empty strings
+      .filter((name, index, self) => self.indexOf(name) === index); // Remove duplicates
+
+    if (user && user.sub) {
+      const newNameList: ListWithNames[] = names.map((name, index) => {
+        return {
+          name: name,
+          id: -index,
+          nameId: -index,
+          user: user.sub || ''
+        };
+      });
+      setNewNameList(newNameList);
+    }
+  }, [user, list, textField]);
+
+  useEffect(() => {
+    if (hasPartner && user.readyToVote) {
+      setReadyToProceed(true);
+    }
+  }, [user, hasPartner]);
 
   useEffect(() => {
     if (statusMessage?.severity !== 'error' && formElement.current) {
       formElement.current.reset();
     }
   }, [statusMessage]);
-
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '5px'
-        }}
-      >
-        <Typography variant="h5">Lägg till nya namn</Typography>
-        <Skeleton variant="rectangular" height={60} />
-      </div>
-    );
-  }
 
   if (!user || !user.sub) {
     return (
@@ -69,7 +79,7 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
 
   return (
     <>
-      <NamesList list={optimisticNameList} user={user} />
+      <NamesList list={optimisticNameList} />
       <div
         style={{
           display: 'flex',
@@ -78,49 +88,51 @@ export const NamesForm: React.FC<{ list: ListWithNames[] }> = ({ list }) => {
         }}
       >
         <Typography variant="h5">Lägg till nya namn</Typography>
-        {statusMessage && (
-          <Box mt={2}>
-            <Alert severity={statusMessage.severity}>
-              {statusMessage.message}
-            </Alert>
-          </Box>
-        )}
         <form
           action={async (formData) => {
-            const namesString = formData.get('names') as string;
-            const namesArray = namesString
-              .split(/[\n,]/)
-              .map((name) => name.trim());
-
-            const newNameList = namesArray.map((name, index) => {
-              return {
-                name: name,
-                id: -index,
-                nameId: -index,
-                user: user.sub || ''
-              };
-            });
-            /*
-              jag har gjort om det här så att den genererar array-items som är kompatibla med
-              typen ListWithNames, men useOptimistic verkar ändå inte funka så det är något
-              mer som är fel
-            */
-
-            addOptimisticNameList(newNameList);
-            await formAction(formData);
+            if (readyToProceed) {
+              Swal.fire({
+                title: 'Är du säker?',
+                text: 'Om du lägger till ett namn så måste ni klicka på redoknappen igen',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: theme.palette.success.main,
+                cancelButtonColor: theme.palette.secondary.main
+              }).then(async (result: any) => {
+                if (result.isConfirmed) {
+                  addOptimisticNameList(newNameList);
+                  formAction(formData);
+                }
+              });
+            } else {
+              addOptimisticNameList(newNameList);
+              formAction(formData);
+            }
           }}
           ref={formElement}
         >
           <Stack spacing={2}>
             <TextField
-              label="Namn"
+              label="Första, andra, tredje..."
               name="names"
               multiline
               minRows={3}
-              onChange={(event) => setTextField(event.target.value)}
+              onChange={(event) => setTextField(event.target.value.trim())}
+            />
+            <input
+              type="hidden"
+              name="newNameList"
+              value={newNameList.map((item) => item.name)}
             />
             <Submit disabled={textField === ''}>Lägg till</Submit>
           </Stack>
+          {statusMessage && (
+            <Box mt={2}>
+              <Alert severity={statusMessage.severity}>
+                {statusMessage.message}
+              </Alert>
+            </Box>
+          )}
         </form>
       </div>
     </>
