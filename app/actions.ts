@@ -1,10 +1,9 @@
 'use server';
 
-import { getSession } from '@auth0/nextjs-auth0';
 import { PrismaClient } from '@prisma/client';
 import { revalidateTag } from 'next/cache';
-import { StatusMessage, ListWithNames } from '../types/types';
-import { startVoting } from './names/actions';
+import { StatusMessage, ListWithNames, UserWithPartners } from '../types/types';
+import { getUserWithPartners } from './overview/actions';
 
 const prisma = new PrismaClient({
   /*  log: ['warn', 'error'] */
@@ -23,33 +22,24 @@ export async function addNames(
       timestamp: Date.now()
     };
   }
-  /* let namesString = '';
-  let namesArray: string[] = []; */
-  const session = await getSession();
-  const user = session?.user ?? null;
+
+  const user: UserWithPartners | null = await getUserWithPartners();
+
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar inte vara inloggad.',
+      timestamp: Date.now()
+    };
+  }
+
+  let hasPartner = false;
+  if (user.partnering.length > 0 && user.partnered.length > 0) {
+    // Om användaren har en partner
+    hasPartner = true;
+  }
+
   const namesList = formData.get('newNameList')?.toString().split(',') ?? [];
-
-  console.log('NamesList', namesList?.toString());
-  console.log('FormDAta', formData);
-  /* namesString = formData.get('names') as string;
-  namesArray = namesString
-    .split(/[\n,]/)
-    .map((name) => name.trim().toLocaleLowerCase()); */
-
-  if (namesList.includes('Jobjörn' || 'jobjörn')) {
-    return {
-      severity: 'error',
-      message: `Jobjörn är upptaget, du kan inte döpa ditt barn till det.`,
-      timestamp: Date.now()
-    };
-  }
-  if (user === null) {
-    return {
-      severity: 'error',
-      message: `Du är inte inloggad.`,
-      timestamp: Date.now()
-    };
-  }
 
   namesList.forEach(async (name) => {
     await prisma.list
@@ -73,8 +63,26 @@ export async function addNames(
           position: 1
         }
       })
-      .then(() => {
-        startVoting(null, formData, false);
+      .then(async () => {
+        await prisma.user.update({
+          where: {
+            sub: user.sub
+          },
+          data: {
+            readyToVote: false
+          }
+        });
+
+        if (hasPartner) {
+          await prisma.user.update({
+            where: {
+              sub: user.partnering[0].partnered?.sub
+            },
+            data: {
+              readyToVote: false
+            }
+          });
+        }
       });
   });
 
@@ -87,9 +95,12 @@ export async function addNames(
       timestamp: Date.now()
     };
   } else {
+    let namesListString =
+      namesList.slice(0, -1).join(', ') + ' och ' + namesList.slice(-1);
+
     return {
       severity: 'success',
-      message: `Namnen ${namesList.join(', ')} har lagts till.`,
+      message: `Namnen ${namesListString} har lagts till.`,
       timestamp: Date.now()
     };
   }
@@ -107,10 +118,23 @@ export async function removeName(
     };
   }
 
-  const id = parseInt(formData.get('remove') as string, 10);
+  const user: UserWithPartners | null = await getUserWithPartners();
+
+  if (!user) {
+    return {
+      severity: 'error',
+      message: 'Du verkar inte vara inloggad.',
+      timestamp: Date.now()
+    };
+  }
+
+  const nameId = parseInt(formData.get('remove') as string, 10);
   await prisma.list.delete({
     where: {
-      id
+      userSub_nameId: {
+        nameId: nameId,
+        userSub: user.sub
+      }
     }
   });
 
@@ -124,29 +148,29 @@ export async function removeName(
 }
 
 export async function getNameList(): Promise<ListWithNames[]> {
-  const session = await getSession();
-  const user = session?.user ?? null;
+  const user: UserWithPartners | null = await getUserWithPartners();
 
   if (!user) {
     return [];
   }
 
-  const findPartner = await prisma.user.findUnique({
-    where: {
-      sub: user.sub
-    },
-    include: {
-      partnering: true
-    }
-  });
+  let partnerSub = '';
+  if (user.partnering.length > 0 && user.partnered.length > 0) {
+    partnerSub = user.partnering[0].partnered?.sub ?? '';
+  }
 
-  if (
-    findPartner?.partnering[0].partneredAccepted === true &&
-    findPartner?.partnering[0].partneredSub !== null
-  ) {
-    const partnerResult = await prisma.list.findMany({
+  let results = [];
+  if (partnerSub) {
+    results = await prisma.list.findMany({
       where: {
-        userSub: findPartner.partnering[0].partneredSub
+        OR: [
+          {
+            userSub: user.sub
+          },
+          {
+            userSub: partnerSub
+          }
+        ]
       },
       include: {
         name: true,
@@ -158,8 +182,8 @@ export async function getNameList(): Promise<ListWithNames[]> {
         }
       }
     });
-
-    const userResult = await prisma.list.findMany({
+  } else {
+    results = await prisma.list.findMany({
       where: {
         userSub: user.sub
       },
@@ -173,26 +197,43 @@ export async function getNameList(): Promise<ListWithNames[]> {
         }
       }
     });
-
-    const allNames = [...partnerResult, ...userResult];
-    const names = allNames.flatMap((item) => {
-      return [
-        {
-          name: item.name.name,
-          user: item.user.email,
-          id: item.id,
-          nameId: item.name.id,
-          avatar: item.user.picture ?? ''
-        }
-      ];
-    });
-
-    const allNamesSorted = names.sort((a, b) => {
-      return a.name.localeCompare(b.name, 'sv');
-    });
-
-    return allNamesSorted;
-  } else {
-    return [];
   }
+
+  const names = results.flatMap((item) => {
+    return [
+      {
+        name: item.name.name,
+        user: item.user.email,
+        id: item.id,
+        nameId: item.name.id,
+        avatar: item.user.picture ?? ''
+      }
+    ];
+  });
+
+  const updatedNames = names.map((item) => {
+    const duplicateIndex = names.findIndex(
+      (name) => name.nameId === item.nameId && name.id !== item.id
+    );
+    if (duplicateIndex !== -1) {
+      const duplicate = names[duplicateIndex];
+      const double = true;
+      const doubleAvatar = duplicate.avatar;
+
+      names.splice(duplicateIndex, 1);
+
+      return {
+        ...item,
+        double,
+        doubleAvatar
+      };
+    }
+    return item;
+  });
+
+  const allNamesSorted = updatedNames.sort((a, b) => {
+    return a.name.localeCompare(b.name, 'sv');
+  });
+
+  return allNamesSorted;
 }
