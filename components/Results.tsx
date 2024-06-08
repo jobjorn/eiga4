@@ -152,48 +152,54 @@ export const Results: React.FC<{
             </tr>
           </thead>
           <tbody>
-            {sortedList.map((name) => (
-              <tr key={name.id}>
-                <td
-                  className="positionCell"
-                  style={{
-                    backgroundColor: `#${calculateMiddleColor({
-                      ratio: name.position / max
-                    })}`,
-                    textAlign: 'center'
-                  }}
-                >
-                  {name.position}
-                </td>
-                {partnerFinished && name.averagePosition && (
+            {sortedList.map((name) => {
+              if (!(name && name.name && name.name.length > 0)) {
+                return null;
+              }
+
+              return (
+                <tr key={name.id}>
                   <td
                     className="positionCell"
                     style={{
                       backgroundColor: `#${calculateMiddleColor({
-                        ratio: name.averagePosition / max
+                        ratio: name.position / max
                       })}`,
                       textAlign: 'center'
                     }}
                   >
-                    {name.averagePosition.toFixed(0)}
+                    {name.position}
                   </td>
-                )}
-                {partnerFinished && name.partnerPosition && (
-                  <td
-                    className="positionCell"
-                    style={{
-                      backgroundColor: `#${calculateMiddleColor({
-                        ratio: name.partnerPosition / max
-                      })}`,
-                      textAlign: 'center'
-                    }}
-                  >
-                    {name.partnerPosition}
-                  </td>
-                )}
-                <td className="nameCell">{name.name}</td>
-              </tr>
-            ))}
+                  {partnerFinished && name.averagePosition && (
+                    <td
+                      className="positionCell"
+                      style={{
+                        backgroundColor: `#${calculateMiddleColor({
+                          ratio: name.averagePosition / max
+                        })}`,
+                        textAlign: 'center'
+                      }}
+                    >
+                      {name.averagePosition.toFixed(0)}
+                    </td>
+                  )}
+                  {partnerFinished && name.partnerPosition && (
+                    <td
+                      className="positionCell"
+                      style={{
+                        backgroundColor: `#${calculateMiddleColor({
+                          ratio: name.partnerPosition / max
+                        })}`,
+                        textAlign: 'center'
+                      }}
+                    >
+                      {name.partnerPosition}
+                    </td>
+                  )}
+                  <td className="nameCell">{name.name}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </TableContainer>
