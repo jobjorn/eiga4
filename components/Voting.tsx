@@ -36,7 +36,7 @@ export const Voting: React.FC<{ list: ListWithNames[]; votes: Vote[] }> = ({
       let j = 0;
 
       // Compare the elements of the left and right arrays and merge them in sorted order
-      while (i < left.length && j < right.length) {
+      while (i < left.length && j < right.length && left[i] && right[j]) {
         const isLeftWinner = votes.find(
           (vote) =>
             vote.winnerId === left[i].nameId && vote.loserId === right[j].nameId
