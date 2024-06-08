@@ -125,7 +125,7 @@ export default async function Page() {
       let position = index + 1;
       let partnerPosition =
         sortedPartnerList.findIndex(
-          (partnerName) => partnerName.name === name.name
+          (partnerName) => partnerName?.name === name?.name
         ) + 1;
       let averagePosition = (position + partnerPosition) / 2;
 
