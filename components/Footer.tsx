@@ -41,9 +41,14 @@ export const Footer: React.FC<{}> = () => {
                 </li>
               </>
             ) : (
-              <li>
-                <Link href="/api/auth/login">Logga in</Link>
-              </li>
+              <>
+                <li>
+                  <Link href="/">Start</Link>
+                </li>
+                <li>
+                  <Link href="/api/auth/login">Logga in</Link>
+                </li>
+              </>
             )}
           </ul>
         </Box>
