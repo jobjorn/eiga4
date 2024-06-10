@@ -95,6 +95,8 @@ export const NamesForm: React.FC<{
                 title: 'Är du säker?',
                 text: 'Om du lägger till ett namn så måste ni klicka på redoknappen igen',
                 icon: 'warning',
+                confirmButtonText: 'Ja, lägg till namn',
+                cancelButtonText: 'Nej, avbryt',
                 showCancelButton: true,
                 confirmButtonColor: theme.palette.success.main,
                 cancelButtonColor: theme.palette.secondary.main
