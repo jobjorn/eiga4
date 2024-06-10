@@ -1,9 +1,8 @@
 'use client';
-
 import { Alert, Box, Stack, TextField, Typography } from '@mui/material';
 import React, { useRef, useEffect, useOptimistic, useState } from 'react';
 import { useFormState } from 'react-dom';
-import { addNames } from 'app/actions';
+import { addNames } from 'app/names/actions';
 import { toTitleCase } from 'lib/toTitleCase';
 import { theme } from 'styles/theme';
 import { ListWithNames, UserWithPartners } from 'types/types';

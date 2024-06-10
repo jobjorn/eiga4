@@ -1,6 +1,6 @@
 import { Box, Skeleton } from '@mui/material';
 import { Vote } from '@prisma/client';
-import { getNameList } from 'app/actions';
+import { getNameList } from 'app/names/actions';
 import { getUserWithPartners } from 'app/overview/actions';
 import { PageTitle } from 'app/uicomponents/PageTitle';
 import { getPartnerVotes, getVotes } from 'app/voting/actions';

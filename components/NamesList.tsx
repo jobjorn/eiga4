@@ -4,7 +4,7 @@ import { Alert, Avatar, Box, Skeleton, Typography } from '@mui/material';
 import React, { useRef } from 'react';
 import { useFormState } from 'react-dom';
 import { AiOutlineClose } from 'react-icons/ai';
-import { removeName } from 'app/actions';
+import { removeName } from 'app/names/actions';
 import { theme } from 'styles/theme';
 import { ListWithNames } from 'types/types';
 import { Submit } from './Submit';
